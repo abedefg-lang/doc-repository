@@ -1,14 +1,14 @@
 package pers.tom.docwarehouse.controller.api;
 
 import io.swagger.annotations.Api;
-
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pers.tom.docwarehouse.annotation.ApiAuthentication;
 import pers.tom.docwarehouse.annotation.PackagingResponse;
 import pers.tom.docwarehouse.model.dto.UserDto;
-import pers.tom.docwarehouse.model.entity.User;
 import pers.tom.docwarehouse.model.param.LoginParam;
 import pers.tom.docwarehouse.security.SecurityConstant;
 import pers.tom.docwarehouse.security.UserInfo;
@@ -36,17 +36,27 @@ public class UserController {
     }
 
     @PostMapping("/login")
+    @ApiOperation("登录")
     public UserDto login(@RequestBody @Valid LoginParam loginParam,
                          HttpSession session){
 
-        User user = userService.login(loginParam);
+        UserDto user = userService.login(loginParam);
 
         //添加到session中
         UserInfo userInfo = new UserInfo(user.getUserId(), user.getUsername(), user.getLastLoginTime());
         session.setAttribute(SecurityConstant.USER_INFO_SESSION_KEY, userInfo);
         session.setMaxInactiveInterval(SecurityConstant.USER_LOGIN_EXPIRATION_TIME);
 
-        return userService.converterToDto(user);
+        return user;
+    }
+
+
+    @PostMapping("/logout")
+    @ApiOperation("登出")
+    @ApiAuthentication
+    public void logout(HttpSession session){
+        session.removeAttribute(SecurityConstant.USER_INFO_SESSION_KEY);
+        userService.logout();
     }
 
 }

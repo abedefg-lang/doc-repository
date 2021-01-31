@@ -5,11 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.util.StringUtils;
 import pers.tom.docwarehouse.model.entity.AuditableEntity;
-import pers.tom.docwarehouse.model.supports.InputConverter;
-
-import javax.validation.constraints.Future;
-import javax.validation.constraints.Past;
-import java.util.Date;
+import pers.tom.docwarehouse.model.supports.InputData;
+import pers.tom.docwarehouse.utils.DateFormatUtils;
 
 /**
  * @author tom
@@ -17,35 +14,47 @@ import java.util.Date;
  * @date 2021/1/30 23:42
  */
 @Data
-public abstract class AuditableQuery<T extends AuditableEntity> implements InputConverter<QueryWrapper<T>> {
+public abstract class AuditableQuery<T extends AuditableEntity> implements InputData<QueryWrapper<T>> {
 
     @ApiModelProperty("创建人")
     private String createBy;
 
-    @Past
     @ApiModelProperty("起始创建时间")
-    private Date startCreateTime;
+    private String startCreateTime;
 
-    @Future
     @ApiModelProperty("结束创建时间")
-    private Date endCreateTime;
+    private String endCreateTime;
 
     @ApiModelProperty("修改人")
     private String updateBy;
 
-    @Past
     @ApiModelProperty("起始修改时间")
-    private Date startUpdateTime;
+    private String startUpdateTime;
 
-    @Future
     @ApiModelProperty("结束修改时间")
-    private Date endUpdateTime;
+    private String endUpdateTime;
 
     @Override
-    public QueryWrapper<T> converterTo() {
+    public QueryWrapper<T> converterTo(){
+
+        //创建查询条件
+        String pattern = DateFormatUtils.SECOND_LEVEL_PATTERN;
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();
-        queryWrapper.likeRight(!StringUtils.isEmpty(createBy), "create_by", createBy);
+        queryWrapper.likeRight(!StringUtils.isEmpty(createBy), "create_by", createBy)
+                .ge(!StringUtils.isEmpty(startCreateTime), "create_time", DateFormatUtils.getTime(pattern, startCreateTime))
+                .le(StringUtils.isEmpty(endCreateTime), "create_time", DateFormatUtils.getTime(pattern, endCreateTime))
+                .likeRight(!StringUtils.isEmpty(updateBy), "update_by", updateBy)
+                .ge(!StringUtils.isEmpty(startUpdateTime), "update_time", DateFormatUtils.getTime(pattern, startUpdateTime))
+                .le(StringUtils.isEmpty(endUpdateTime), "update_time", DateFormatUtils.getTime(pattern, endCreateTime));
+
+        this.fillConditions(queryWrapper);
 
         return queryWrapper;
     }
+
+    /**
+     * 交给子类填充条件
+     * @param queryWrapper 查询条件
+     */
+    protected abstract void fillConditions(QueryWrapper<T> queryWrapper);
 }

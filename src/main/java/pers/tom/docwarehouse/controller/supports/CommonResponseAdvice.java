@@ -11,7 +11,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import pers.tom.docwarehouse.annotation.PackagingResponse;
-import pers.tom.docwarehouse.model.dto.BaseResult;
+import pers.tom.docwarehouse.model.supports.BaseResult;
 
 import javax.validation.constraints.NotNull;
 

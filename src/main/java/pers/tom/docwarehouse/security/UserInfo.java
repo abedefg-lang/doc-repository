@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 /**
  * @author tom
  * @description user 信息
@@ -21,7 +23,7 @@ public class UserInfo {
     private String username;
 
     /**上次登录时间*/
-    private Long lastLoginTime;
+    private String lastLoginTime;
 
 
 }

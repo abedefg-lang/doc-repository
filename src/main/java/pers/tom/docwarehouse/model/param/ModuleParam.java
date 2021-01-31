@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pers.tom.docwarehouse.model.entity.Module;
-import pers.tom.docwarehouse.model.supports.InputConverter;
+import pers.tom.docwarehouse.model.supports.InputData;
 
 import javax.validation.constraints.NotBlank;
 
@@ -19,7 +19,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ModuleParam implements InputConverter<Module> {
+public class ModuleParam implements InputData<Module> {
 
     @ApiModelProperty("模块名称")
     @NotBlank

@@ -3,8 +3,8 @@ package pers.tom.docwarehouse.model.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import pers.tom.docwarehouse.model.entity.AuditableEntity;
-import pers.tom.docwarehouse.model.supports.OutputConverter;
-import pers.tom.docwarehouse.utils.SimpleDataFormatUtils;
+import pers.tom.docwarehouse.model.supports.OutputData;
+import pers.tom.docwarehouse.utils.DateFormatUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,7 +15,7 @@ import java.util.Date;
  * @date 2021-01-29 13:45
  */
 @Data
-public abstract class AuditableDto<T extends AuditableEntity> implements OutputConverter<T> {
+public abstract class AuditableDto<T extends AuditableEntity> implements OutputData<T> {
 
     @ApiModelProperty("创建人名称")
     private String createBy;
@@ -35,9 +35,9 @@ public abstract class AuditableDto<T extends AuditableEntity> implements OutputC
         if(t != null){
 
             //获取秒级别的format
-            SimpleDateFormat format = SimpleDataFormatUtils.getFormat(SimpleDataFormatUtils.SECOND_LEVEL_PATTERN);
-            this.createTime = format.format(new Date(t.getCreateTime()));
-            this.updateTime = format.format(new Date(t.getUpdateTime()));
+            SimpleDateFormat format = DateFormatUtils.getFormat(DateFormatUtils.SECOND_LEVEL_PATTERN);
+            this.createTime = format.format(format.format(new Date(t.getCreateTime())));
+            this.updateTime = format.format(format.format(new Date(t.getUpdateTime())));
 
             //通过用户id获取用户名
             this.createBy = t.getCreateBy();

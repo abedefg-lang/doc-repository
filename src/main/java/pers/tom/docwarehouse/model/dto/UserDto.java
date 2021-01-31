@@ -6,11 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pers.tom.docwarehouse.model.entity.User;
-import pers.tom.docwarehouse.model.supports.OutputConverter;
-import pers.tom.docwarehouse.utils.SimpleDataFormatUtils;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import pers.tom.docwarehouse.model.supports.OutputData;
+import pers.tom.docwarehouse.utils.DateFormatUtils;
 
 /**
  * @author tom
@@ -21,7 +18,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel
-public class UserDto implements OutputConverter<User> {
+public class UserDto implements OutputData<User> {
 
     @ApiModelProperty("主键")
     private Long userId;
@@ -37,9 +34,7 @@ public class UserDto implements OutputConverter<User> {
         if(user != null){
             this.userId = user.getUserId();
             this.username = user.getUsername();
-
-            SimpleDateFormat format = SimpleDataFormatUtils.getFormat(SimpleDataFormatUtils.SECOND_LEVEL_PATTERN);
-            this.lastLoginTime = format.format(new Date(user.getLastLoginTime()));
+            this.lastLoginTime = DateFormatUtils.parseTime(DateFormatUtils.SECOND_LEVEL_PATTERN, user.getLastLoginTime());
         }
     }
 }
