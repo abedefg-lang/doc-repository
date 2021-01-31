@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author tom
@@ -20,10 +21,12 @@ import javax.validation.constraints.Min;
 public class PageParam {
 
     @Min(0)
+    @NotNull
     @ApiModelProperty("分页页码")
     private Integer page;
 
     @Min(0)
+    @NotNull
     @ApiModelProperty("每一页的大小")
     private Integer pageSize;
 

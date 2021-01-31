@@ -1,12 +1,10 @@
 package pers.tom.docwarehouse.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import pers.tom.docwarehouse.model.dto.OperationLogDto;
 import pers.tom.docwarehouse.model.entity.OperationLog;
 import pers.tom.docwarehouse.model.param.OperationLogQuery;
 import pers.tom.docwarehouse.model.supports.PageParam;
 import pers.tom.docwarehouse.model.supports.PageResult;
-import pers.tom.docwarehouse.service.supports.BaseService;
 
 import java.util.List;
 
@@ -15,7 +13,7 @@ import java.util.List;
  * @description
  * @date 2021-01-31 14:50
  */
-public interface OperationLogService extends BaseService<OperationLogDto, OperationLog> {
+public interface OperationLogService {
 
 
     /**
@@ -33,5 +31,10 @@ public interface OperationLogService extends BaseService<OperationLogDto, Operat
      */
     List<OperationLogDto> getRecentLogs(Integer count);
 
-
+    /**
+     * 保存记录
+     * @param operationLog log
+     * @return 返回主键
+     */
+    Long save(OperationLog operationLog);
 }

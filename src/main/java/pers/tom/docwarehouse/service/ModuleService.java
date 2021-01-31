@@ -1,11 +1,10 @@
 package pers.tom.docwarehouse.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import pers.tom.docwarehouse.model.dto.ModuleDto;
-import pers.tom.docwarehouse.model.supports.PageResult;
-import pers.tom.docwarehouse.model.entity.Module;
+import pers.tom.docwarehouse.model.param.ModuleParam;
 import pers.tom.docwarehouse.model.param.ModuleQuery;
 import pers.tom.docwarehouse.model.supports.PageParam;
+import pers.tom.docwarehouse.model.supports.PageResult;
 
 import java.util.List;
 
@@ -14,7 +13,7 @@ import java.util.List;
  * @description
  * @date 2021/1/30 15:45
  */
-public interface ModuleService extends IService<Module> {
+public interface ModuleService {
 
     /**
      * 条件查询模块数据
@@ -31,6 +30,10 @@ public interface ModuleService extends IService<Module> {
      */
     PageResult<ModuleDto> pageBy(ModuleQuery moduleQuery, PageParam pageParam);
 
-
-
+    /**
+     * 创建模块
+     * @param module module
+     * @return 返回主键
+     */
+    Long create(ModuleParam module);
 }

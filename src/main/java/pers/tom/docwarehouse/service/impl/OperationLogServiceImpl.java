@@ -1,7 +1,6 @@
 package pers.tom.docwarehouse.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pers.tom.docwarehouse.mapper.OperationLogMapper;
@@ -11,6 +10,7 @@ import pers.tom.docwarehouse.model.param.OperationLogQuery;
 import pers.tom.docwarehouse.model.supports.PageParam;
 import pers.tom.docwarehouse.model.supports.PageResult;
 import pers.tom.docwarehouse.service.OperationLogService;
+import pers.tom.docwarehouse.utils.CollectionUtils2;
 
 import java.util.List;
 
@@ -21,37 +21,36 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class OperationLogServiceImpl extends ServiceImpl<OperationLogMapper, OperationLog> implements OperationLogService {
+public class OperationLogServiceImpl implements OperationLogService {
+
+
+    private final OperationLogMapper logMapper;
+
+    public OperationLogServiceImpl(OperationLogMapper logMapper){
+        this.logMapper = logMapper;
+    }
 
     @Override
     public PageResult<OperationLogDto> pageBy(OperationLogQuery query, PageParam pageParam) {
 
         Page<OperationLog> page = new Page<>(pageParam.getPage(), pageParam.getPageSize());
         page.setSearchCount(pageParam.getSearchTotal());
-        page(page, query.converterTo());
+        logMapper.selectPage(page, query.converterTo());
 
-        PageResult<OperationLogDto> pageResult = new PageResult<>();
-        pageResult.setTotal(page.getTotal());
-        pageResult.setList(converterList(page.getRecords()));
-        return pageResult;
+        return PageResult.fromIPage(page, operationLog -> new OperationLogDto().converterFrom(operationLog));
     }
 
     @Override
     public List<OperationLogDto> getRecentLogs(Integer count) {
 
-        return converterList(baseMapper.selectRecentLog(count));
+        List<OperationLog> operationLogs = logMapper.selectRecentLog(count);
+        return CollectionUtils2.transform(operationLogs, operationLog -> new OperationLogDto().converterFrom(operationLog));
     }
+
 
     @Override
-    public OperationLogDto converterTo(OperationLog log){
-        if(log != null){
-            OperationLogDto operationLogDto = new OperationLogDto();
-            operationLogDto.converterFrom(log);
-            return operationLogDto;
-        }
-        return null;
+    public Long save(OperationLog operationLog) {
+        logMapper.insert(operationLog);
+        return operationLog.getOperationLogId();
     }
-
-
-
 }

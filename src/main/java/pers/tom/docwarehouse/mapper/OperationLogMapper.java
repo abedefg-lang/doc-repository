@@ -2,6 +2,7 @@ package pers.tom.docwarehouse.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 import pers.tom.docwarehouse.model.entity.OperationLog;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
  * @description
  * @date 2021-01-31 15:02
  */
+@Repository
 public interface OperationLogMapper extends BaseMapper<OperationLog> {
 
     /**

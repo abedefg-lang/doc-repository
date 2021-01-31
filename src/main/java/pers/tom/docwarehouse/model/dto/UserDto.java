@@ -18,7 +18,7 @@ import pers.tom.docwarehouse.utils.DateFormatUtils;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel
-public class UserDto implements OutputData<User> {
+public class UserDto implements OutputData<UserDto, User> {
 
     @ApiModelProperty("主键")
     private Long userId;
@@ -30,11 +30,13 @@ public class UserDto implements OutputData<User> {
     private String lastLoginTime;
 
     @Override
-    public void converterFrom(User user) {
+    public UserDto converterFrom(User user) {
         if(user != null){
             this.userId = user.getUserId();
             this.username = user.getUsername();
             this.lastLoginTime = DateFormatUtils.parseTime(DateFormatUtils.SECOND_LEVEL_PATTERN, user.getLastLoginTime());
         }
+
+        return this;
     }
 }

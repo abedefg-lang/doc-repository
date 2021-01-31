@@ -18,7 +18,7 @@ import pers.tom.docwarehouse.model.entity.Module;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel
-public class ModuleDto extends AuditableDto<Module> {
+public class ModuleDto extends AuditableDto<ModuleDto, Module> {
 
     @ApiModelProperty("模块主键id")
     private Long moduleId;

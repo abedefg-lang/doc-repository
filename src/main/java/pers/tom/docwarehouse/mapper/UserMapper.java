@@ -2,6 +2,7 @@ package pers.tom.docwarehouse.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 import pers.tom.docwarehouse.model.entity.User;
 
 /**
@@ -9,6 +10,7 @@ import pers.tom.docwarehouse.model.entity.User;
  * @description user mapper
  * @date 2021-01-29 13:33
  */
+@Repository
 public interface UserMapper extends BaseMapper<User> {
 
     /**

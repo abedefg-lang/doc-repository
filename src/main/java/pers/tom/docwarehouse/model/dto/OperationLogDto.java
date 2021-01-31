@@ -18,7 +18,7 @@ import pers.tom.docwarehouse.utils.DateFormatUtils;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel
-public class OperationLogDto implements OutputData<OperationLog> {
+public class OperationLogDto implements OutputData<OperationLogDto, OperationLog> {
 
     @ApiModelProperty("主键")
     private Long operationLogId;
@@ -36,7 +36,7 @@ public class OperationLogDto implements OutputData<OperationLog> {
     private String operationTime;
 
     @Override
-    public void converterFrom(OperationLog operationLog) {
+    public OperationLogDto converterFrom(OperationLog operationLog) {
         if(operationLog != null){
             this.operationLogId = operationLog.getOperationLogId();
             this.operator = operationLog.getOperator();
@@ -44,5 +44,7 @@ public class OperationLogDto implements OutputData<OperationLog> {
             this.type = operationLog.getType();
             this.operationTime = DateFormatUtils.parseTime(DateFormatUtils.SECOND_LEVEL_PATTERN, operationLog.getOperationTime());
         }
+
+        return this;
     }
 }

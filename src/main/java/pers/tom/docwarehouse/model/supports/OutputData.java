@@ -5,11 +5,13 @@ package pers.tom.docwarehouse.model.supports;
  * @description 输出数据
  * @date 2021-01-29 13:12
  */
-public interface OutputData<T> {
+public interface OutputData<T, S> {
 
     /**
      * 将指定对象转换成输出数据
-     * @param t 对象
+     * @param s source
      */
-    void converterFrom(T t);
+    T converterFrom(S s);
+
+
 }

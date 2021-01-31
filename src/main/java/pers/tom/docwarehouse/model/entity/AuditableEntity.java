@@ -3,6 +3,8 @@ package pers.tom.docwarehouse.model.entity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
+import pers.tom.docwarehouse.security.UserInfo;
+import pers.tom.docwarehouse.security.UserInfoHolder;
 
 /**
  * @author lijia
@@ -28,5 +30,13 @@ public abstract class AuditableEntity {
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Long updateTime;
 
-
+    /**
+     * 判断操作这条数据的人是否是这条数据的创建人
+     * 通过获取userInfo中的username与createBy比较
+     * @return  返回是否是创建人
+     */
+    private boolean isCreator(){
+        UserInfo userInfo = UserInfoHolder.getUserInfo();
+        return userInfo != null && userInfo.getUsername().equals(createBy);
+    }
 }

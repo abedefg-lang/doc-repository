@@ -1,6 +1,5 @@
 package pers.tom.docwarehouse.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -20,20 +19,24 @@ import pers.tom.docwarehouse.service.UserService;
  */
 @Service
 @Slf4j
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+public class UserServiceImpl implements UserService {
 
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public UserServiceImpl(ApplicationEventPublisher applicationEventPublisher) {
+    private final UserMapper userMapper;
+
+    public UserServiceImpl(ApplicationEventPublisher applicationEventPublisher,
+                           UserMapper userMapper) {
         this.applicationEventPublisher = applicationEventPublisher;
+        this.userMapper = userMapper;
     }
 
     @Override
     public UserDto login(LoginParam loginParam) {
 
         //先通过用户名查询出数据
-        User user = baseMapper.selectByUsername(loginParam.getUsername());
+        User user = userMapper.selectByUsername(loginParam.getUsername());
         if(user == null || !loginParam.getPassword().equals(user.getPassword())){
             throw new ServiceException("账号或用户名错误");
         }
@@ -41,7 +44,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //修改登录时间
         user.setLastLoginTime(System.currentTimeMillis());
 
-        UserDto userDto = converterTo(user);
+        UserDto userDto = new UserDto().converterFrom(user);
 
         //发布登录日志
         OperationLog operationLog = new OperationLog("login", "登录系统");
@@ -57,13 +60,4 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         applicationEventPublisher.publishEvent(new OperationLogEvent(new OperationLog("logout", "登出系统")));
     }
 
-    @Override
-    public UserDto converterTo(User user) {
-        if(user != null){
-            UserDto userDto = new UserDto();
-            userDto.converterFrom(user);
-            return userDto;
-        }
-        return null;
-    }
 }

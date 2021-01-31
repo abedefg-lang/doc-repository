@@ -15,7 +15,7 @@ import java.util.Date;
  * @date 2021-01-29 13:45
  */
 @Data
-public abstract class AuditableDto<T extends AuditableEntity> implements OutputData<T> {
+public abstract class AuditableDto<T, S extends AuditableEntity> implements OutputData<T, S> {
 
     @ApiModelProperty("创建人名称")
     private String createBy;
@@ -30,28 +30,30 @@ public abstract class AuditableDto<T extends AuditableEntity> implements OutputD
     private String updateTime;
 
     @Override
-    public void converterFrom(T t) {
+    public T converterFrom(S s) {
 
-        if(t != null){
+        if(s != null){
 
             //获取秒级别的format
             SimpleDateFormat format = DateFormatUtils.getFormat(DateFormatUtils.SECOND_LEVEL_PATTERN);
-            this.createTime = format.format(format.format(new Date(t.getCreateTime())));
-            this.updateTime = format.format(format.format(new Date(t.getUpdateTime())));
+            this.createTime = format.format(format.format(new Date(s.getCreateTime())));
+            this.updateTime = format.format(format.format(new Date(s.getUpdateTime())));
 
             //通过用户id获取用户名
-            this.createBy = t.getCreateBy();
-            this.updateBy = t.getUpdateBy();
+            this.createBy = s.getCreateBy();
+            this.updateBy = s.getUpdateBy();
 
             //转换其余字段
-            doConverter(t);
+            doConverter(s);
         }
+
+        return (T) this;
 
     }
 
     /**
      * 转换其余字段
-     * @param t entity对象
+     * @param s source
      */
-    protected abstract void doConverter(T t);
+    protected abstract void doConverter(S s);
 }
