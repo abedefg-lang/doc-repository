@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.tom.docwarehouse.mapper.OperationLogMapper">
+
+    <select id="selectRecentLog" parameterType="integer" resultType="pers.tom.docwarehouse.model.entity.OperationLog">
+        select `operation_log_id`, `operator`, `info`, `type`, `operation_time`
+        from `operation_log`
+        order by `operation_time` desc
+        limit #{count}
+    </select>
+</mapper>
