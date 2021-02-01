@@ -38,7 +38,7 @@ public class OperationLogDto implements OutputData<OperationLog> {
             this.operationLogId = operationLog.getOperationLogId();
             this.operator = operationLog.getOperator();
             this.info = operationLog.getInfo();
-            this.operationTime = DateFormatUtils.parseTime(DateFormatUtils.SECOND_LEVEL_PATTERN, operationLog.getOperationTime());
+            this.operationTime = DateFormatUtils.format(DateFormatUtils.SECOND_LEVEL_PATTERN, operationLog.getOperationTime());
         }
     }
 }

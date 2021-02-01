@@ -20,5 +20,4 @@ public interface ModuleService extends ConvertibleService<ModuleDto, Module> {
      */
     Module createModule(ModuleParam module);
 
-
 }

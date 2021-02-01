@@ -34,7 +34,7 @@ public class UserDto implements OutputData<User> {
         if(user != null){
             this.userId = user.getUserId();
             this.username = user.getUsername();
-            this.lastLoginTime = DateFormatUtils.parseTime(DateFormatUtils.SECOND_LEVEL_PATTERN, user.getLastLoginTime());
+            this.lastLoginTime = DateFormatUtils.format(DateFormatUtils.SECOND_LEVEL_PATTERN, user.getLastLoginTime());
         }
     }
 }

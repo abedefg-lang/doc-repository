@@ -20,14 +20,14 @@ import javax.validation.constraints.NotNull;
 @ApiModel
 public class PageParam {
 
-    @Min(0)
+    @Min(1)
     @ApiModelProperty("分页页码")
-    private Integer page;
+    private int page;
 
-    @Min(0)
+    @Min(1)
     @ApiModelProperty("每一页的大小")
-    private Integer pageSize;
+    private int pageSize;
 
     @ApiModelProperty("是否查询总数 默认查询")
-    private Boolean searchTotal = true;
+    private boolean searchTotal = true;
 }

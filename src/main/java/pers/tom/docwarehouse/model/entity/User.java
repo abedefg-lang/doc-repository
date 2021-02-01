@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 /**
  * @author lijia
  * @description 用户实体对象
@@ -33,6 +35,6 @@ public class User{
 
     /**上次登录时间*/
     @TableField("last_login_time")
-    private Long lastLoginTime;
+    private Date lastLoginTime;
 
 }

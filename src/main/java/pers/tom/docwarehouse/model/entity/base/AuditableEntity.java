@@ -6,6 +6,8 @@ import lombok.Data;
 import pers.tom.docwarehouse.security.SecurityInfo;
 import pers.tom.docwarehouse.security.SecurityInfoHolder;
 
+import java.util.Date;
+
 /**
  * @author lijia
  * @description 可审计实体对象
@@ -20,7 +22,7 @@ public abstract class AuditableEntity {
 
     /**创建时间*/
     @TableField(value = "create_time", fill = FieldFill.INSERT)
-    private Long createTime;
+    private Date createTime;
 
     /**修改人用户名*/
     @TableField(value = "update_by", fill = FieldFill.INSERT_UPDATE)
@@ -28,7 +30,7 @@ public abstract class AuditableEntity {
 
     /**修改时间*/
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
-    private Long updateTime;
+    private Date updateTime;
 
     /**
      * 判断当前操作这条数据的人是否是创建人

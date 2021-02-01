@@ -18,6 +18,7 @@ import pers.tom.docwarehouse.security.SecurityInfoHolder;
 import pers.tom.docwarehouse.service.OperationLogService;
 import pers.tom.docwarehouse.service.UserService;
 
+import java.util.Date;
 
 
 /**
@@ -51,7 +52,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         //修改登录时间
-        user.setLastLoginTime(System.currentTimeMillis());
+        user.setLastLoginTime(new Date());
         baseMapper.updateById(user);
 
         //记录操作日志

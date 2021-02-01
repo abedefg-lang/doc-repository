@@ -39,10 +39,11 @@ public class ModuleController {
 
     @PostMapping
     @ApiOperation("创建模块")
-    public Module createModule(@RequestBody @Valid ModuleParam module){
+    public ModuleDto createModule(@RequestBody @Valid ModuleParam module){
 
-        return moduleService.createModule(module);
+        return moduleService.convertTo(moduleService.createModule(module));
     }
+
 
     @GetMapping("/{moduleId}")
     @ApiOperation("获取单个模块信息")
@@ -58,7 +59,7 @@ public class ModuleController {
         return BaseResult.ok(moduleService.removeById(moduleId));
     }
 
-    @GetMapping("/listBy")
+    @GetMapping
     @ApiOperation("条件查询模块数据")
     public List<ModuleDto> listBy(ModuleQuery moduleQuery){
 
@@ -67,10 +68,10 @@ public class ModuleController {
 
     @GetMapping("/pageBy")
     @ApiModelProperty("分页查询模块数据")
-    public PageResult<ModuleDto> pageBy(ModuleQuery moduleQuery,
-                                        @Valid PageParam pageParam){
+    public PageResult<ModuleDto> pageBy(@Valid PageParam pageParam,
+                                        ModuleQuery moduleQuery){
 
-        Page<Module> page = new Page<>(pageParam.getPage(), pageParam.getPageSize(), pageParam.getSearchTotal());
+        Page<Module> page = new Page<>(pageParam.getPage(), pageParam.getPageSize());
         moduleService.page(page, moduleQuery.toQueryWrapper());
 
         return PageResult.fromIPage(page, moduleService::convertTo);

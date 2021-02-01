@@ -12,6 +12,7 @@ import pers.tom.docwarehouse.security.SecurityInfo;
 import pers.tom.docwarehouse.security.SecurityInfoHolder;
 import pers.tom.docwarehouse.service.OperationLogService;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,7 +38,7 @@ public class OperationLogServiceImpl extends ServiceImpl<OperationLogMapper, Ope
         //设置操作人与操作时间
         SecurityInfo securityInfo = SecurityInfoHolder.getSecurityInfo();
         operationLog.setOperator(securityInfo == null ? "" : securityInfo.getUsername());
-        operationLog.setOperationTime(System.currentTimeMillis());
+        operationLog.setOperationTime(new Date());
 
         return SqlHelper.retBool(baseMapper.insert(operationLog));
     }

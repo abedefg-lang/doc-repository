@@ -42,8 +42,9 @@ public class OperationLogController {
     @ApiOperation("分页查询操作日志")
     public PageResult<OperationLogDto> pageBy(OperationLogQuery query,
                                               @Valid PageParam pageParam){
-        Page<OperationLog> page = new Page<>(pageParam.getPage(), pageParam.getPageSize(), pageParam.getSearchTotal());
+        Page<OperationLog> page = new Page<>(pageParam.getPage(), pageParam.getPageSize(), pageParam.isSearchTotal());
         operationLogService.page(page, query.toQueryWrapper());
+
         return PageResult.fromIPage(page, operationLogService::convertTo);
     }
 

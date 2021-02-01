@@ -6,7 +6,6 @@ import lombok.Data;
 import org.springframework.util.StringUtils;
 import pers.tom.docwarehouse.model.entity.base.AuditableEntity;
 import pers.tom.docwarehouse.model.supports.QueryWrapperConverter;
-import pers.tom.docwarehouse.utils.DateFormatUtils;
 
 /**
  * @author tom
@@ -38,14 +37,13 @@ public abstract class AuditableQuery<T extends AuditableEntity> implements Query
     public QueryWrapper<T> toQueryWrapper(){
 
         //创建查询条件
-        String pattern = DateFormatUtils.SECOND_LEVEL_PATTERN;
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();
         queryWrapper.likeRight(!StringUtils.isEmpty(createBy), "create_by", createBy)
-                .ge(!StringUtils.isEmpty(startCreateTime), "create_time", DateFormatUtils.getTime(pattern, startCreateTime))
-                .le(StringUtils.isEmpty(endCreateTime), "create_time", DateFormatUtils.getTime(pattern, endCreateTime))
+                .ge(!StringUtils.isEmpty(startCreateTime), "create_time", startCreateTime)
+                .le(!StringUtils.isEmpty(endCreateTime), "create_time", endCreateTime)
                 .likeRight(!StringUtils.isEmpty(updateBy), "update_by", updateBy)
-                .ge(!StringUtils.isEmpty(startUpdateTime), "update_time", DateFormatUtils.getTime(pattern, startUpdateTime))
-                .le(StringUtils.isEmpty(endUpdateTime), "update_time", DateFormatUtils.getTime(pattern, endCreateTime))
+                .ge(!StringUtils.isEmpty(startUpdateTime), "update_time", startUpdateTime)
+                .le(!StringUtils.isEmpty(endUpdateTime), "update_time", endUpdateTime)
                 .orderByDesc("create_time");
 
         this.fillConditions(queryWrapper);

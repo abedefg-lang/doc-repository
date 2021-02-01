@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 import pers.tom.docwarehouse.model.entity.OperationLog;
 import pers.tom.docwarehouse.model.supports.QueryWrapperConverter;
-import pers.tom.docwarehouse.utils.DateFormatUtils;
 
 /**
  * @author lijia
@@ -37,12 +36,12 @@ public class OperationLogQuery implements QueryWrapperConverter<OperationLog> {
 
     @Override
     public QueryWrapper<OperationLog> toQueryWrapper() {
-        String pattern = DateFormatUtils.SECOND_LEVEL_PATTERN;
         QueryWrapper<OperationLog> queryWrapper = new QueryWrapper<>();
         queryWrapper.like(!StringUtils.isEmpty(info), "info", info)
                 .likeRight(!StringUtils.isEmpty(operator), "operator", operator)
-                .ge(!StringUtils.isEmpty(startTime), "operation_time", DateFormatUtils.getTime(pattern, startTime))
-                .le(!StringUtils.isEmpty(endTime), "operation_time", DateFormatUtils.getTime(pattern, endTime));
+                .ge(!StringUtils.isEmpty(startTime), "operation_time", startTime)
+                .le(!StringUtils.isEmpty(endTime), "operation_time", endTime)
+                .orderByDesc("operation_time");
 
         return queryWrapper;
     }

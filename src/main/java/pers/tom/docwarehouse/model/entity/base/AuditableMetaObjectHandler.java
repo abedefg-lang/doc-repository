@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import pers.tom.docwarehouse.security.SecurityInfo;
 import pers.tom.docwarehouse.security.SecurityInfoHolder;
 
+import java.util.Date;
+
 /**
  * @author lijia
  * @description
@@ -19,7 +21,7 @@ public class AuditableMetaObjectHandler implements MetaObjectHandler {
 
         //设置创建时间
         if(metaObject.hasSetter("createTime")){
-            metaObject.setValue("createTime", System.currentTimeMillis());
+            metaObject.setValue("createTime", new Date());
         }
         //设置创建人
         if(metaObject.hasSetter("createBy")){
@@ -36,7 +38,7 @@ public class AuditableMetaObjectHandler implements MetaObjectHandler {
 
         //设置修改时间
         if(metaObject.hasSetter("updateTime")){
-            metaObject.setValue("updateTime", System.currentTimeMillis());
+            metaObject.setValue("updateTime", new Date());
         }
         //设置修改人
         if(metaObject.hasSetter("updateBy")){

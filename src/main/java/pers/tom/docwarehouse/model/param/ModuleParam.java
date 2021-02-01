@@ -21,8 +21,8 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class ModuleParam implements InputData<Module> {
 
-    @ApiModelProperty(value = "模块名称", required = true)
     @NotBlank
+    @ApiModelProperty(value = "模块名称", required = true)
     private String name;
 
     @Override

@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 /**
  * @author lijia
  * @description 操作日志
@@ -29,7 +31,7 @@ public class OperationLog {
     private String info;
 
     @TableField("operation_time")
-    private Long operationTime;
+    private Date operationTime;
 
     public OperationLog(String info){
         this.info = info;

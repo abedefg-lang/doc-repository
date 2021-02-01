@@ -11,3 +11,8 @@ spring:
 
 mybatis-plus:
   mapper-locations: mappers/*.xml
+
+
+security:
+  jwt:
+    secret-key: tom

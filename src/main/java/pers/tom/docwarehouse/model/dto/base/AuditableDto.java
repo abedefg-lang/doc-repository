@@ -6,6 +6,8 @@ import pers.tom.docwarehouse.model.entity.base.AuditableEntity;
 import pers.tom.docwarehouse.model.supports.OutputData;
 import pers.tom.docwarehouse.utils.DateFormatUtils;
 
+import java.text.SimpleDateFormat;
+
 /**
  * @author lijia
  * @description 可审计的dto对象
@@ -32,9 +34,9 @@ public abstract class AuditableDto<T extends AuditableEntity> implements OutputD
         if(t != null){
 
             //获取秒级别的format
-            String pattern = DateFormatUtils.SECOND_LEVEL_PATTERN;
-            this.createTime = DateFormatUtils.parseTime(pattern, t.getCreateTime());
-            this.updateTime = DateFormatUtils.parseTime(pattern, t.getUpdateTime());
+            SimpleDateFormat format = DateFormatUtils.getFormat(DateFormatUtils.SECOND_LEVEL_PATTERN);
+            this.createTime = format.format(t.getCreateTime());
+            this.updateTime = format.format(t.getUpdateTime());
 
             //通过用户id获取用户名
             this.createBy = t.getCreateBy();

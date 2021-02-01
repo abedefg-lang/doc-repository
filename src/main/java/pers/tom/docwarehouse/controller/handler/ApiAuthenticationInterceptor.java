@@ -1,6 +1,11 @@
 package pers.tom.docwarehouse.controller.handler;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
@@ -9,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import pers.tom.docwarehouse.annotation.ApiAuthentication;
 import pers.tom.docwarehouse.config.properties.JwtConfiguration;
 import pers.tom.docwarehouse.exception.AuthenticationException;
+import pers.tom.docwarehouse.model.entity.User;
 import pers.tom.docwarehouse.security.SecurityInfo;
 import pers.tom.docwarehouse.security.SecurityInfoHolder;
 import pers.tom.docwarehouse.service.UserService;
@@ -22,18 +28,22 @@ import javax.servlet.http.HttpServletResponse;
  * @date 2021-02-01 14:04
  */
 @Component
+@Slf4j
 public class ApiAuthenticationInterceptor implements HandlerInterceptor {
 
     public static final String AUTHENTICATION_HEADER_NAME = "Authorization";
 
     private final UserService userService;
 
-    private final JwtConfiguration jwtConfiguration;
+//    private final JwtConfiguration jwtConfiguration;
+
+    private final JWTVerifier verifier;
 
     public ApiAuthenticationInterceptor(UserService userService,
                                         JwtConfiguration jwtConfiguration){
         this.userService = userService;
-        this.jwtConfiguration = jwtConfiguration;
+//        this.jwtConfiguration = jwtConfiguration;
+        this.verifier = JWT.require(Algorithm.HMAC256(jwtConfiguration.getSecretKey())).build();
     }
 
     @Override
@@ -78,12 +88,24 @@ public class ApiAuthenticationInterceptor implements HandlerInterceptor {
      */
     protected SecurityInfo authentication(HttpServletRequest request) throws AuthenticationException {
         String token = this.getRealToken(request);
-        if(StringUtils.isEmpty(token)){
-            throw new AuthenticationException("请重新登录");
+        if(!StringUtils.isEmpty(token)){
+            try{
+                //验证token
+                DecodedJWT decoded = verifier.verify(token);
+                Claim claim = decoded.getClaim("userId");
+                if(claim != null){
+                    //查询user
+                    User user = userService.getById(claim.asLong());
+                    return user == null ? null : new SecurityInfo(user.getUserId(), user.getUsername());
+                }
+            }catch (Exception e){
+                log.error("Token exception: ", e);
+                throw new AuthenticationException("请重新登录");
+            }
         }
 
-
-        return null;
+        //如果上面没有进行返回 抛出一次囊
+        throw new AuthenticationException("请重新登录");
     }
 
     /**
@@ -92,7 +114,12 @@ public class ApiAuthenticationInterceptor implements HandlerInterceptor {
      * @return 返回token
      */
     private String getRealToken(HttpServletRequest request){
-        return request.getHeader(AUTHENTICATION_HEADER_NAME);
+        String headerValue = request.getHeader(AUTHENTICATION_HEADER_NAME);
+        if(!StringUtils.isEmpty(headerValue)){
+            String[] headerValueArr = headerValue.split(" ");
+            return headerValueArr.length >= 2 ? headerValueArr[1] : null;
+        }
+        return null;
     }
 
 
