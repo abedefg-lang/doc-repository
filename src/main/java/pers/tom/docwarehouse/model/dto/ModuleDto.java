@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import pers.tom.docwarehouse.model.dto.base.AuditableDto;
 import pers.tom.docwarehouse.model.entity.Module;
 
 /**
@@ -18,7 +19,7 @@ import pers.tom.docwarehouse.model.entity.Module;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel
-public class ModuleDto extends AuditableDto<ModuleDto, Module> {
+public class ModuleDto extends AuditableDto<Module> {
 
     @ApiModelProperty("模块主键id")
     private Long moduleId;

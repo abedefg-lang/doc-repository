@@ -1,23 +1,20 @@
 package pers.tom.docwarehouse.service.impl;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import pers.tom.docwarehouse.exception.PermissionException;
 import pers.tom.docwarehouse.exception.ServiceException;
-import pers.tom.docwarehouse.listener.OperationLogEvent;
 import pers.tom.docwarehouse.mapper.ModuleMapper;
 import pers.tom.docwarehouse.model.dto.ModuleDto;
 import pers.tom.docwarehouse.model.entity.Module;
 import pers.tom.docwarehouse.model.entity.OperationLog;
 import pers.tom.docwarehouse.model.param.ModuleParam;
-import pers.tom.docwarehouse.model.param.ModuleQuery;
-import pers.tom.docwarehouse.model.supports.PageParam;
-import pers.tom.docwarehouse.model.supports.PageResult;
 import pers.tom.docwarehouse.service.ModuleService;
-import pers.tom.docwarehouse.utils.CollectionUtils2;
+import pers.tom.docwarehouse.service.OperationLogService;
 
-import java.util.List;
+import java.io.Serializable;
 
 /**
  * @author tom
@@ -26,38 +23,23 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class ModuleServiceImpl  implements ModuleService {
+public class ModuleServiceImpl extends ServiceImpl<ModuleMapper, Module> implements ModuleService {
 
 
     private final ModuleMapper moduleMapper;
 
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final OperationLogService logService;
 
-    public ModuleServiceImpl(ApplicationEventPublisher applicationEventPublisher,
-                             ModuleMapper moduleMapper) {
-        this.applicationEventPublisher = applicationEventPublisher;
+    public ModuleServiceImpl(ModuleMapper moduleMapper,
+                             OperationLogService logService) {
         this.moduleMapper = moduleMapper;
+        this.logService = logService;
     }
 
-    @Override
-    public List<ModuleDto> listBy(ModuleQuery moduleQuery) {
-
-        List<Module> modules = moduleMapper.selectList(moduleQuery.converterTo());
-        return CollectionUtils2.transform(modules, module -> new ModuleDto().converterFrom(module));
-    }
 
     @Override
-    public PageResult<ModuleDto> pageBy(ModuleQuery moduleQuery, PageParam pageParam) {
-
-        Page<Module> page = new Page<>(pageParam.getPage(), pageParam.getPageSize());
-        page.setSearchCount(pageParam.getSearchTotal());
-        moduleMapper.selectPage(page, moduleQuery.converterTo());
-
-        return PageResult.fromIPage(page, module -> new ModuleDto().converterFrom(module));
-    }
-
-    @Override
-    public Long create(ModuleParam moduleParam) {
+    @Transactional
+    public Module createModule(ModuleParam moduleParam) {
 
         //查询该模块是否存在
         String moduleName = moduleParam.getName();
@@ -67,9 +49,41 @@ public class ModuleServiceImpl  implements ModuleService {
         Module module = moduleParam.converterTo();
         moduleMapper.insert(module);
 
-        //发布创建模块事件
-        applicationEventPublisher.publishEvent(new OperationLogEvent(new OperationLog("save", "新增模块:"+moduleName)));
-        return module.getModuleId();
+        //记录用户新增模块日志
+        logService.save(new OperationLog("新增模块:"+moduleName));
+
+        return module;
     }
 
+
+    @Override
+    @Transactional
+    public boolean removeById(Serializable id) {
+        //判断需要删除模块是否存在
+        Module module = getById(id);
+        if(module == null){
+            throw new ServiceException("模块不存在 请刷新重试");
+        }
+
+        if(!module.isCreator()){
+            throw new PermissionException("不是该模块的创建人无法删除");
+        }
+
+        //删除并且保存日志
+        if(super.removeById(id)){
+            logService.save(new OperationLog("删除模块:"+module.getName()));
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public ModuleDto convertTo(Module module) {
+        if(module != null){
+            ModuleDto moduleDto = new ModuleDto();
+            moduleDto.converterFrom(module);
+            return moduleDto;
+        }
+        return null;
+    }
 }

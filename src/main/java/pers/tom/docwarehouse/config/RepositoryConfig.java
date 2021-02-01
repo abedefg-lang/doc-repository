@@ -18,6 +18,4 @@ public class RepositoryConfig {
         return new PaginationInnerInterceptor();
     }
 
-
-
 }

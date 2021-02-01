@@ -6,15 +6,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pers.tom.docwarehouse.annotation.ApiAuthentication;
 import pers.tom.docwarehouse.annotation.PackagingResponse;
-import pers.tom.docwarehouse.model.dto.UserDto;
 import pers.tom.docwarehouse.model.param.LoginParam;
-import pers.tom.docwarehouse.security.SecurityConstant;
-import pers.tom.docwarehouse.security.UserInfo;
+import pers.tom.docwarehouse.model.dto.AuthUser;
 import pers.tom.docwarehouse.service.UserService;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 
@@ -37,26 +33,10 @@ public class UserController {
 
     @PostMapping("/login")
     @ApiOperation("登录")
-    public UserDto login(@RequestBody @Valid LoginParam loginParam,
-                         HttpSession session){
+    public AuthUser login(@RequestBody @Valid LoginParam loginParam){
 
-        UserDto user = userService.login(loginParam);
-
-        //添加到session中
-        UserInfo userInfo = new UserInfo(user.getUserId(), user.getUsername(), user.getLastLoginTime());
-        session.setAttribute(SecurityConstant.USER_INFO_SESSION_KEY, userInfo);
-        session.setMaxInactiveInterval(SecurityConstant.USER_LOGIN_EXPIRATION_TIME);
-
-        return user;
+        return userService.login(loginParam);
     }
 
-
-    @PostMapping("/logout")
-    @ApiOperation("登出")
-    @ApiAuthentication
-    public void logout(HttpSession session){
-        session.removeAttribute(SecurityConstant.USER_INFO_SESSION_KEY);
-        userService.logout();
-    }
 
 }

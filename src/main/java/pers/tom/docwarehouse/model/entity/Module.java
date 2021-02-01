@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import pers.tom.docwarehouse.model.entity.base.AuditableEntity;
 
 /**
  * @author tom
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName("module")
-public class Module extends AuditableEntity{
+public class Module extends AuditableEntity {
 
     @TableId(value = "module_id", type = IdType.AUTO)
     private Long moduleId;

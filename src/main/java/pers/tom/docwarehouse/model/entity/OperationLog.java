@@ -7,8 +7,6 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pers.tom.docwarehouse.security.UserInfo;
-import pers.tom.docwarehouse.security.UserInfoHolder;
 
 /**
  * @author lijia
@@ -30,20 +28,12 @@ public class OperationLog {
     @TableField("info")
     private String info;
 
-    @TableField("type")
-    private String type;
-
     @TableField("operation_time")
     private Long operationTime;
 
-
-    public OperationLog(String type, String info){
-        this.type = type;
+    public OperationLog(String info){
         this.info = info;
-        this.operationTime = System.currentTimeMillis();
-        UserInfo userInfo = UserInfoHolder.getUserInfo();
-        if(userInfo != null){
-            operator = userInfo.getUsername();
-        }
     }
+
+
 }

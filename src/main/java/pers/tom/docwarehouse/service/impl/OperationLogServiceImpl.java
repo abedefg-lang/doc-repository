@@ -1,16 +1,16 @@
 package pers.tom.docwarehouse.service.impl;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pers.tom.docwarehouse.mapper.OperationLogMapper;
 import pers.tom.docwarehouse.model.dto.OperationLogDto;
 import pers.tom.docwarehouse.model.entity.OperationLog;
-import pers.tom.docwarehouse.model.param.OperationLogQuery;
-import pers.tom.docwarehouse.model.supports.PageParam;
-import pers.tom.docwarehouse.model.supports.PageResult;
+import pers.tom.docwarehouse.security.SecurityInfo;
+import pers.tom.docwarehouse.security.SecurityInfoHolder;
 import pers.tom.docwarehouse.service.OperationLogService;
-import pers.tom.docwarehouse.utils.CollectionUtils2;
 
 import java.util.List;
 
@@ -21,36 +21,35 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class OperationLogServiceImpl implements OperationLogService {
+public class OperationLogServiceImpl extends ServiceImpl<OperationLogMapper, OperationLog> implements OperationLogService {
 
 
-    private final OperationLogMapper logMapper;
+    @Override
+    public List<OperationLog> getRecentLogs(Integer count) {
 
-    public OperationLogServiceImpl(OperationLogMapper logMapper){
-        this.logMapper = logMapper;
+        return baseMapper.selectRecentLog(count);
     }
 
     @Override
-    public PageResult<OperationLogDto> pageBy(OperationLogQuery query, PageParam pageParam) {
+    @Transactional
+    public boolean save(OperationLog operationLog) {
 
-        Page<OperationLog> page = new Page<>(pageParam.getPage(), pageParam.getPageSize());
-        page.setSearchCount(pageParam.getSearchTotal());
-        logMapper.selectPage(page, query.converterTo());
+        //设置操作人与操作时间
+        SecurityInfo securityInfo = SecurityInfoHolder.getSecurityInfo();
+        operationLog.setOperator(securityInfo == null ? "" : securityInfo.getUsername());
+        operationLog.setOperationTime(System.currentTimeMillis());
 
-        return PageResult.fromIPage(page, operationLog -> new OperationLogDto().converterFrom(operationLog));
-    }
-
-    @Override
-    public List<OperationLogDto> getRecentLogs(Integer count) {
-
-        List<OperationLog> operationLogs = logMapper.selectRecentLog(count);
-        return CollectionUtils2.transform(operationLogs, operationLog -> new OperationLogDto().converterFrom(operationLog));
+        return SqlHelper.retBool(baseMapper.insert(operationLog));
     }
 
 
     @Override
-    public Long save(OperationLog operationLog) {
-        logMapper.insert(operationLog);
-        return operationLog.getOperationLogId();
+    public OperationLogDto convertTo(OperationLog operationLog) {
+        if(operationLog != null){
+            OperationLogDto logDto = new OperationLogDto();
+            logDto.converterFrom(operationLog);
+            return logDto;
+        }
+        return null;
     }
 }
