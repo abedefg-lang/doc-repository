@@ -4,6 +4,7 @@ package pers.tom.docwarehouse;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * @author tom
@@ -12,6 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 @MapperScan("pers.tom.docwarehouse.mapper")
+@EnableAsync
 public class DocRepositoryApplication {
 
     public static void main(String[] args) {

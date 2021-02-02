@@ -2,10 +2,12 @@ package pers.tom.docwarehouse.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pers.tom.docwarehouse.exception.PermissionException;
 import pers.tom.docwarehouse.exception.ServiceException;
+import pers.tom.docwarehouse.listener.OperationLogEvent;
 import pers.tom.docwarehouse.mapper.ModuleMapper;
 import pers.tom.docwarehouse.model.dto.ModuleDto;
 import pers.tom.docwarehouse.model.entity.Module;
@@ -28,12 +30,12 @@ public class ModuleServiceImpl extends ServiceImpl<ModuleMapper, Module> impleme
 
     private final ModuleMapper moduleMapper;
 
-    private final OperationLogService logService;
+    private final ApplicationEventPublisher eventPublisher;
 
     public ModuleServiceImpl(ModuleMapper moduleMapper,
-                             OperationLogService logService) {
+                             ApplicationEventPublisher eventPublisher) {
         this.moduleMapper = moduleMapper;
-        this.logService = logService;
+        this.eventPublisher = eventPublisher;
     }
 
 
@@ -50,7 +52,7 @@ public class ModuleServiceImpl extends ServiceImpl<ModuleMapper, Module> impleme
         moduleMapper.insert(module);
 
         //记录用户新增模块日志
-        logService.save(new OperationLog("新增模块:"+moduleName));
+        eventPublisher.publishEvent(new OperationLogEvent(new OperationLog("新增模块:"+moduleName)));
 
         return module;
     }
@@ -71,7 +73,7 @@ public class ModuleServiceImpl extends ServiceImpl<ModuleMapper, Module> impleme
 
         //删除并且保存日志
         if(super.removeById(id)){
-            logService.save(new OperationLog("删除模块:"+module.getName()));
+            eventPublisher.publishEvent(new OperationLog("删除模块:"+module.getName()));
             return true;
         }
         return false;

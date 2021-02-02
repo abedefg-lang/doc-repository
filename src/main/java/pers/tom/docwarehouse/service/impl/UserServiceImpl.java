@@ -4,9 +4,11 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pers.tom.docwarehouse.config.properties.JwtConfiguration;
 import pers.tom.docwarehouse.exception.ServiceException;
+import pers.tom.docwarehouse.listener.OperationLogEvent;
 import pers.tom.docwarehouse.mapper.UserMapper;
 import pers.tom.docwarehouse.model.dto.UserDto;
 import pers.tom.docwarehouse.model.entity.OperationLog;
@@ -31,13 +33,13 @@ import java.util.Date;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
 
-    private final OperationLogService logService;
+    private final ApplicationEventPublisher eventPublisher;
 
     private final JwtConfiguration jwtConfiguration;
 
-    public UserServiceImpl(OperationLogService logService,
+    public UserServiceImpl(ApplicationEventPublisher eventPublisher,
                            JwtConfiguration jwtConfiguration) {
-        this.logService = logService;
+        this.eventPublisher = eventPublisher;
         this.jwtConfiguration = jwtConfiguration;
     }
 
@@ -57,7 +59,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         //记录操作日志
         SecurityInfoHolder.setSecurityInfo(new SecurityInfo(user.getUserId(), user.getUsername()));
-        logService.save(new OperationLog("登录系统"));
+        eventPublisher.publishEvent(new OperationLogEvent(new OperationLog("登录系统")));
 
         //创建token
         String token = JWT.create()
