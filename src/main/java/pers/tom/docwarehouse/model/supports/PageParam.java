@@ -1,4 +1,4 @@
-package pers.tom.docwarehouse.model.param.base;
+package pers.tom.docwarehouse.model.supports;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 /**
  * @author tom

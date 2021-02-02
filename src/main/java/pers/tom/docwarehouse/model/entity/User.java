@@ -11,30 +11,25 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 /**
- * @author lijia
- * @description 用户实体对象
- * @date 2021-01-29 13:27
+ * @author tom
+ * @description
+ * @date 2021/2/2 23:48
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName("user")
-public class User{
+public class User {
 
-    /**主键id*/
     @TableId(value = "user_id", type = IdType.AUTO)
     private Long userId;
 
-    /**username*/
     @TableField("username")
     private String username;
 
-    /**password*/
     @TableField("password")
     private String password;
 
-    /**上次登录时间*/
     @TableField("last_login_time")
     private Date lastLoginTime;
-
 }

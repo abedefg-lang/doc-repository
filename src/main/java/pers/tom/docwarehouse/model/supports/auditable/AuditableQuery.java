@@ -1,11 +1,10 @@
-package pers.tom.docwarehouse.model.query.base;
+package pers.tom.docwarehouse.model.supports.auditable;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.util.StringUtils;
-import pers.tom.docwarehouse.model.entity.base.AuditableEntity;
-import pers.tom.docwarehouse.model.supports.QueryWrapperConverter;
+import pers.tom.docwarehouse.model.supports.converter.QueryWrapperConverter;
 
 /**
  * @author tom
@@ -15,8 +14,8 @@ import pers.tom.docwarehouse.model.supports.QueryWrapperConverter;
 @Data
 public abstract class AuditableQuery<T extends AuditableEntity> implements QueryWrapperConverter<T> {
 
-    @ApiModelProperty("创建人")
-    private String createBy;
+    @ApiModelProperty("创建人id")
+    private Long creatorId;
 
     @ApiModelProperty("起始创建时间")
     private String startCreateTime;
@@ -24,8 +23,8 @@ public abstract class AuditableQuery<T extends AuditableEntity> implements Query
     @ApiModelProperty("结束创建时间")
     private String endCreateTime;
 
-    @ApiModelProperty("修改人")
-    private String updateBy;
+    @ApiModelProperty("修改人id")
+    private Long updaterId;
 
     @ApiModelProperty("起始修改时间")
     private String startUpdateTime;
@@ -38,10 +37,10 @@ public abstract class AuditableQuery<T extends AuditableEntity> implements Query
 
         //创建查询条件
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();
-        queryWrapper.likeRight(!StringUtils.isEmpty(createBy), "create_by", createBy)
+        queryWrapper.eq(creatorId != null, "creator_id", creatorId)
                 .ge(!StringUtils.isEmpty(startCreateTime), "create_time", startCreateTime)
                 .le(!StringUtils.isEmpty(endCreateTime), "create_time", endCreateTime)
-                .likeRight(!StringUtils.isEmpty(updateBy), "update_by", updateBy)
+                .eq(updaterId != null, "updater_id", updaterId)
                 .ge(!StringUtils.isEmpty(startUpdateTime), "update_time", startUpdateTime)
                 .le(!StringUtils.isEmpty(endUpdateTime), "update_time", endUpdateTime)
                 .orderByDesc("create_time");

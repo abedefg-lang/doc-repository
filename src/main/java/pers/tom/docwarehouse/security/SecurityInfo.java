@@ -1,23 +1,33 @@
 package pers.tom.docwarehouse.security;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 /**
  * @author tom
- * @description user 信息
- * @date 2021/1/30 21:57
+ * @description
+ * @date 2021/2/2 22:59
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class SecurityInfo {
 
-    /**userId*/
-    private Long userId;
+    public static final String IDENTITY_NAME = "identity";
 
-    /**username*/
-    private String username;
+    public static final String IDENTITY_INFO_NAME = "identityInfo";
 
+    /**身份的唯一标识符*/
+    private final Long identity;
+
+    /**身份信息 */
+    private final String identityInfo;
+
+
+    public SecurityInfo(Long identity, String identityInfo){
+        this.identity = identity;
+        this.identityInfo = identityInfo;
+    }
+
+    public Long getIdentity() {
+        return identity;
+    }
+
+    public String getIdentityInfo() {
+        return identityInfo;
+    }
 }

@@ -7,9 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @author lijia
- * @description 登录成功之后返回的user信息
- * @date 2021-02-01 14:15
+ * @author tom
+ * @description
+ * @date 2021/2/3 0:04
  */
 @Data
 @AllArgsConstructor
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @ApiModel
 public class AuthUser {
 
-    @ApiModelProperty("user信息")
+    @ApiModelProperty("用户信息")
     private UserDto user;
 
     @ApiModelProperty("token")

@@ -14,10 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 import pers.tom.docwarehouse.annotation.ApiAuthentication;
 import pers.tom.docwarehouse.config.properties.JwtConfiguration;
 import pers.tom.docwarehouse.exception.AuthenticationException;
-import pers.tom.docwarehouse.model.entity.User;
 import pers.tom.docwarehouse.security.SecurityInfo;
 import pers.tom.docwarehouse.security.SecurityInfoHolder;
-import pers.tom.docwarehouse.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,16 +31,10 @@ public class ApiAuthenticationInterceptor implements HandlerInterceptor {
 
     public static final String AUTHENTICATION_HEADER_NAME = "Authorization";
 
-    private final UserService userService;
-
-//    private final JwtConfiguration jwtConfiguration;
-
     private final JWTVerifier verifier;
 
-    public ApiAuthenticationInterceptor(UserService userService,
-                                        JwtConfiguration jwtConfiguration){
-        this.userService = userService;
-//        this.jwtConfiguration = jwtConfiguration;
+    public ApiAuthenticationInterceptor(JwtConfiguration jwtConfiguration){
+
         this.verifier = JWT.require(Algorithm.HMAC256(jwtConfiguration.getSecretKey())).build();
     }
 
@@ -92,11 +84,13 @@ public class ApiAuthenticationInterceptor implements HandlerInterceptor {
             try{
                 //验证token
                 DecodedJWT decoded = verifier.verify(token);
-                Claim claim = decoded.getClaim("userId");
-                if(claim != null){
+
+                //获取身份唯一标识 身份标识描述
+                Claim identity = decoded.getClaim(SecurityInfo.IDENTITY_NAME);
+                Claim identityInfo = decoded.getClaim(SecurityInfo.IDENTITY_INFO_NAME);
+                if(identity != null && identityInfo != null){
                     //查询user
-                    User user = userService.getById(claim.asLong());
-                    return user == null ? null : new SecurityInfo(user.getUserId(), user.getUsername());
+                    return new SecurityInfo(identity.asLong(), identityInfo.asString());
                 }
             }catch (Exception e){
                 log.error("Token exception: ", e);

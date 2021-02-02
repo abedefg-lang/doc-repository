@@ -2,22 +2,20 @@ package pers.tom.docwarehouse.controller.api;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import pers.tom.docwarehouse.annotation.ApiAuthentication;
 import pers.tom.docwarehouse.annotation.PackagingResponse;
-import pers.tom.docwarehouse.model.param.LoginParam;
 import pers.tom.docwarehouse.model.dto.AuthUser;
+import pers.tom.docwarehouse.model.param.LoginParam;
+import pers.tom.docwarehouse.model.supports.BaseResult;
 import pers.tom.docwarehouse.service.UserService;
 
 import javax.validation.Valid;
 
-
 /**
- * @author lijia
- * @description user controller
- * @date 2021-01-29 13:35
+ * @author tom
+ * @description
+ * @date 2021/2/2 23:58
  */
 @RestController
 @RequestMapping("/api/users")
@@ -38,5 +36,10 @@ public class UserController {
         return userService.login(loginParam);
     }
 
+    @GetMapping("/test")
+    @ApiAuthentication
+    public BaseResult<String> testApi(@RequestParam("str") String str){
+        return BaseResult.ok(str);
+    }
 
 }

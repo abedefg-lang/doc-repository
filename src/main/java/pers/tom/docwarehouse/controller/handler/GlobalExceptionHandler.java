@@ -10,7 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pers.tom.docwarehouse.exception.DocWarehouseException;
-import pers.tom.docwarehouse.model.dto.base.BaseResult;
+import pers.tom.docwarehouse.model.supports.BaseResult;
 import pers.tom.docwarehouse.utils.CollectionUtils2;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package pers.tom.docwarehouse.model.dto.base;
+package pers.tom.docwarehouse.model.supports;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiModel;
