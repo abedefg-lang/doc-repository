@@ -2,9 +2,7 @@ package pers.tom.docwarehouse.model.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import pers.tom.docwarehouse.model.entity.User;
 import pers.tom.docwarehouse.model.supports.converter.OutputData;
 import pers.tom.docwarehouse.utils.DateFormatUtils;
@@ -15,8 +13,6 @@ import pers.tom.docwarehouse.utils.DateFormatUtils;
  * @date 2021/2/3 0:04
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @ApiModel
 public class UserDto implements OutputData<UserDto, User> {
 

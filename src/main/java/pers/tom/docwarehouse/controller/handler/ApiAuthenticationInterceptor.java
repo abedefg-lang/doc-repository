@@ -86,11 +86,11 @@ public class ApiAuthenticationInterceptor implements HandlerInterceptor {
                 DecodedJWT decoded = verifier.verify(token);
 
                 //获取身份唯一标识 身份标识描述
-                Claim identity = decoded.getClaim(SecurityInfo.IDENTITY_NAME);
-                Claim identityInfo = decoded.getClaim(SecurityInfo.IDENTITY_INFO_NAME);
+                Long identity = decoded.getClaim(SecurityInfo.IDENTITY_NAME).asLong();
+                String identityInfo = decoded.getClaim(SecurityInfo.IDENTITY_INFO_NAME).asString();
                 if(identity != null && identityInfo != null){
                     //查询user
-                    return new SecurityInfo(identity.asLong(), identityInfo.asString());
+                    return new SecurityInfo(identity, identityInfo);
                 }
             }catch (Exception e){
                 log.error("Token exception: ", e);

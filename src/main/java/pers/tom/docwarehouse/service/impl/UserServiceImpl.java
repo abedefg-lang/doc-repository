@@ -3,11 +3,9 @@ package pers.tom.docwarehouse.service.impl;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pers.tom.docwarehouse.config.properties.JwtConfiguration;
 import pers.tom.docwarehouse.exception.AuthenticationException;
-import pers.tom.docwarehouse.listener.OperationLogEvent;
 import pers.tom.docwarehouse.mapper.UserMapper;
 import pers.tom.docwarehouse.model.dto.AuthUser;
 import pers.tom.docwarehouse.model.dto.UserDto;
@@ -16,6 +14,7 @@ import pers.tom.docwarehouse.model.entity.User;
 import pers.tom.docwarehouse.model.param.LoginParam;
 import pers.tom.docwarehouse.security.SecurityInfo;
 import pers.tom.docwarehouse.security.SecurityInfoHolder;
+import pers.tom.docwarehouse.service.OperationLogService;
 import pers.tom.docwarehouse.service.UserService;
 
 import java.util.Date;
@@ -31,12 +30,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     private final JwtConfiguration jwtConfiguration;
 
-    private final ApplicationEventPublisher eventPublisher;
+    private final OperationLogService logService;
 
     public UserServiceImpl(JwtConfiguration jwtConfiguration,
-                           ApplicationEventPublisher eventPublisher) {
+                           OperationLogService logService) {
         this.jwtConfiguration = jwtConfiguration;
-        this.eventPublisher = eventPublisher;
+        this.logService = logService;
     }
 
     @Override
@@ -52,8 +51,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         SecurityInfoHolder.setSecurityInfo(new SecurityInfo(user.getUserId(), user.getUsername()));
 
-        //发布登录日志
-        eventPublisher.publishEvent(new OperationLogEvent(new OperationLog("登录系统")));
+        //写入日志
+        logService.saveLog(new OperationLog("登录系统"));
 
         //返回authUser
         return new AuthUser(new UserDto().converterFrom(user), buildToken(user));
@@ -63,7 +62,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * 修改登录时间
      * @param user user
      */
-    private void updateLastLoginTime(User user){
+    public void updateLastLoginTime(User user){
 
         //TODO 改为异步修改
         user.setLastLoginTime(new Date());

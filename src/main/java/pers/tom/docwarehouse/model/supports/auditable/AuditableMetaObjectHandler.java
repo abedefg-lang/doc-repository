@@ -58,10 +58,6 @@ public class AuditableMetaObjectHandler implements MetaObjectHandler {
         if(metaObject.hasSetter("updateTime")){
             metaObject.setValue("updateTime", new Date());
         }
-//        //设置修改人
-//        if(metaObject.hasSetter("updateBy")){
-////            SecurityInfo securityInfo = SecurityInfoHolder.getSecurityInfo();
-////            metaObject.setValue("updateBy", securityInfo == null ? "" : securityInfo.getUsername());
-//        }
+
     }
 }

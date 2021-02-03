@@ -19,7 +19,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/users")
-@Api(tags = "用户管理")
+@Api(tags = "用户接口")
 @PackagingResponse
 public class UserController {
 
