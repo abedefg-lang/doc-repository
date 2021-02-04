@@ -19,8 +19,6 @@ import pers.tom.docwarehouse.service.CategoryService;
 import pers.tom.docwarehouse.service.DocumentService;
 import pers.tom.docwarehouse.service.OperationLogService;
 
-import java.util.List;
-
 /**
  * @author lijia
  * @description
@@ -59,17 +57,22 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
     }
 
     @Override
-    public boolean edit(DocumentParam newDocument, Long documentId) {
+    @Transactional
+    public boolean edit(DocumentParam documentParam, Long documentId) {
 
-        //判断文档标题是否存在
-//        String title = newDocument.getTitle();
-//        if(baseMapper.existByTitle(title)){
-//            throw new ServiceException(title + "已存在");
-//        }
+        String title = documentParam.getTitle();
+        if(baseMapper.existByTitle(title)){
+            throw new ServiceException(title + "已存在");
+        }
+
+        Document document = documentParam.converterTo();
+        document.setDocumentId(documentId);
+        baseMapper.updateById(document);
 
         //写入日志
-//        logService.saveLog(new OperationLog("编辑文档: " + title));
-        return false;
+        logService.saveLog(new OperationLog("编辑模块: " + title));
+
+        return true;
     }
 
     @Override
@@ -95,12 +98,6 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         return PageResult.fromIPage(page, this::converterTo);
     }
 
-    @Override
-    public List<DocumentDto> getMyDocument() {
-
-
-        return null;
-    }
 
     private DocumentDto converterTo(Document document){
 

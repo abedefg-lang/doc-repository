@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import pers.tom.docwarehouse.model.dto.DocumentDto;
 import pers.tom.docwarehouse.model.entity.Document;
 import pers.tom.docwarehouse.model.param.DocumentParam;
+import pers.tom.docwarehouse.model.param.EditDocumentParam;
 import pers.tom.docwarehouse.model.query.DocumentQuery;
 import pers.tom.docwarehouse.model.supports.PageParam;
 import pers.tom.docwarehouse.model.supports.PageResult;
@@ -26,7 +27,7 @@ public interface DocumentService extends IService<Document> {
 
     /**
      * 编辑文档
-     * @param newDocument 新文档
+     * @param newDocument 新文档参数
      * @param documentId 主键
      * @return 返回是否编辑成功
      */
@@ -47,9 +48,4 @@ public interface DocumentService extends IService<Document> {
      */
     PageResult<DocumentDto> pageBy(DocumentQuery documentQuery, PageParam pageParam);
 
-    /**
-     * 获取由我创建的文档
-     * @return 返回list
-     */
-    List<DocumentDto> getMyDocument();
 }

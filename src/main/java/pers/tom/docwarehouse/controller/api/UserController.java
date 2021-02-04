@@ -9,7 +9,6 @@ import pers.tom.docwarehouse.model.dto.AuthUser;
 import pers.tom.docwarehouse.model.dto.UserDto;
 import pers.tom.docwarehouse.model.param.LoginParam;
 import pers.tom.docwarehouse.model.query.UserQuery;
-import pers.tom.docwarehouse.model.supports.BaseResult;
 import pers.tom.docwarehouse.model.supports.PageParam;
 import pers.tom.docwarehouse.model.supports.PageResult;
 import pers.tom.docwarehouse.service.UserService;
@@ -43,6 +42,7 @@ public class UserController {
 
     @GetMapping("/listBy")
     @ApiOperation("条件查询用户")
+    @ApiAuthentication
     public List<UserDto> listBy(UserQuery userQuery){
 
         return userService.listBy(userQuery);
@@ -50,6 +50,7 @@ public class UserController {
 
     @GetMapping("/pageBy")
     @ApiOperation("分页查询用户信息")
+    @ApiAuthentication
     public PageResult<UserDto> pageBy(UserQuery userQuery,
                                       @Valid PageParam pageParam){
 

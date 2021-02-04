@@ -31,7 +31,7 @@ public abstract class AuditableEntity {
     private String updatedBy;
 
     /**修改人id*/
-    @TableField(value = "updater_id", fill = FieldFill.INSERT)
+    @TableField(value = "updater_id", fill = FieldFill.INSERT_UPDATE)
     private Long updaterId;
 
     /**修改时间*/

@@ -97,7 +97,7 @@ public class ApiAuthenticationInterceptor implements HandlerInterceptor {
             }
         }
 
-        //如果上面没有进行返回 抛出一次囊
+        //如果上面没有进行返回 抛出异常
         throw new AuthenticationException("请重新登录");
     }
 

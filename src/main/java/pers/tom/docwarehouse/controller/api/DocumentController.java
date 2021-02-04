@@ -41,12 +41,12 @@ public class DocumentController {
         return BaseResult.ok(documentService.create(documentParam).getDocumentId());
     }
 
-//    @PutMapping("/{documentId}")
+    @PutMapping("/{documentId}")
     @ApiOperation("编辑文档")
-    public BaseResult<Boolean> edit(@RequestBody DocumentParam newDocument,
+    public BaseResult<Boolean> edit(@RequestBody DocumentParam documentParam,
                                     @PathVariable("documentId") Long documentId){
 
-        return BaseResult.ok(documentService.edit(newDocument, documentId));
+        return BaseResult.ok(documentService.edit(documentParam, documentId));
     }
 
 

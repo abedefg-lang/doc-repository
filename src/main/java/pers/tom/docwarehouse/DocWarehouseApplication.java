@@ -16,10 +16,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @MapperScan("pers.tom.docwarehouse.mapper")
 @EnableAsync
 @EnableCaching
-public class DocRepositoryApplication {
+public class DocWarehouseApplication {
 
     public static void main(String[] args) {
 
-        SpringApplication.run(DocRepositoryApplication.class, args);
+        SpringApplication.run(DocWarehouseApplication.class, args);
     }
 }
