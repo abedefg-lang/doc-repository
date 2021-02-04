@@ -2,6 +2,7 @@ package pers.tom.docwarehouse.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pers.tom.docwarehouse.exception.ServiceException;
 import pers.tom.docwarehouse.mapper.CategoryMapper;
@@ -16,6 +17,7 @@ import pers.tom.docwarehouse.service.CategoryService;
 import pers.tom.docwarehouse.service.OperationLogService;
 import pers.tom.docwarehouse.utils.CollectionUtils2;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -30,6 +32,14 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     public CategoryServiceImpl(OperationLogService logService) {
         this.logService = logService;
+    }
+
+
+    @Override
+    @Cacheable(cacheNames = "category", key = "#id")
+    public Category getById(Serializable id) {
+
+        return super.getById(id);
     }
 
     @Override

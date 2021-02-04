@@ -41,7 +41,7 @@ public class CategoryController {
         return BaseResult.ok(categoryService.createCategory(param).getCategoryId());
     }
 
-    @GetMapping
+    @GetMapping("/listBy")
     @ApiOperation("条件查询分类")
     public List<CategoryDto> listBy(CategoryQuery categoryQuery){
 
@@ -55,7 +55,5 @@ public class CategoryController {
 
         return categoryService.pageBy(categoryQuery, pageParam);
     }
-
-
 
 }

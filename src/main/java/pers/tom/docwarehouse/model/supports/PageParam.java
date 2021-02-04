@@ -20,11 +20,11 @@ import javax.validation.constraints.Min;
 public class PageParam {
 
     @Min(1)
-    @ApiModelProperty("分页页码")
+    @ApiModelProperty(value = "分页页码", required = true)
     private int page;
 
     @Min(1)
-    @ApiModelProperty("每一页的大小")
+    @ApiModelProperty(value = "每一页的大小", required = true)
     private int pageSize;
 
     @ApiModelProperty("是否查询总数 默认查询")

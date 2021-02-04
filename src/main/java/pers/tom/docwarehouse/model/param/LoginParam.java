@@ -16,10 +16,10 @@ import javax.validation.constraints.NotBlank;
 public class LoginParam {
 
     @NotBlank
-    @ApiModelProperty("用户名")
+    @ApiModelProperty(value = "用户名", required = true)
     private String username;
 
     @NotBlank
-    @ApiModelProperty("密码")
+    @ApiModelProperty(value = "密码", required = true)
     private String password;
 }

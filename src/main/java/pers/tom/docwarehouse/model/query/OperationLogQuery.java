@@ -36,7 +36,8 @@ public class OperationLogQuery implements QueryWrapperConverter<OperationLog> {
         queryWrapper.like(StringUtils.isEmpty(info), "info", info)
                 .eq(creatorId != null, "creator_id", creatorId)
                 .ge(StringUtils.isEmpty(startCreateTime), "create_time", startCreateTime)
-                .le(StringUtils.isEmpty(endCreateTime), "create_time", endCreateTime);
+                .le(StringUtils.isEmpty(endCreateTime), "create_time", endCreateTime)
+                .orderByDesc("create_time");
 
         return queryWrapper;
     }

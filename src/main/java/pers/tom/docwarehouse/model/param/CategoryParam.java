@@ -18,7 +18,7 @@ import javax.validation.constraints.NotBlank;
 public class CategoryParam implements InputData<Category> {
 
     @NotBlank
-    @ApiModelProperty("分类名称")
+    @ApiModelProperty(value = "分类名称", required = true)
     private String name;
 
     @Override

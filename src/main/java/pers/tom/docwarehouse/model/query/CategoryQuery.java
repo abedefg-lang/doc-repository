@@ -24,6 +24,7 @@ public class CategoryQuery extends AuditableQuery<Category> {
 
     @Override
     protected void fillConditions(QueryWrapper<Category> queryWrapper) {
-        queryWrapper.likeRight(!StringUtils.isEmpty(name), "name", name);
+        queryWrapper.likeRight(!StringUtils.isEmpty(name), "name", name)
+                .orderByDesc("create_time");
     }
 }

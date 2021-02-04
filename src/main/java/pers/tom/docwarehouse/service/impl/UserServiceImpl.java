@@ -2,22 +2,30 @@ package pers.tom.docwarehouse.service.impl;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import pers.tom.docwarehouse.config.properties.JwtConfiguration;
 import pers.tom.docwarehouse.exception.AuthenticationException;
 import pers.tom.docwarehouse.mapper.UserMapper;
 import pers.tom.docwarehouse.model.dto.AuthUser;
+import pers.tom.docwarehouse.model.dto.CategoryDto;
 import pers.tom.docwarehouse.model.dto.UserDto;
+import pers.tom.docwarehouse.model.entity.Category;
 import pers.tom.docwarehouse.model.entity.OperationLog;
 import pers.tom.docwarehouse.model.entity.User;
 import pers.tom.docwarehouse.model.param.LoginParam;
+import pers.tom.docwarehouse.model.query.UserQuery;
+import pers.tom.docwarehouse.model.supports.PageParam;
+import pers.tom.docwarehouse.model.supports.PageResult;
 import pers.tom.docwarehouse.security.SecurityInfo;
 import pers.tom.docwarehouse.security.SecurityInfoHolder;
 import pers.tom.docwarehouse.service.OperationLogService;
 import pers.tom.docwarehouse.service.UserService;
+import pers.tom.docwarehouse.utils.CollectionUtils2;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author tom
@@ -58,11 +66,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return new AuthUser(new UserDto().converterFrom(user), buildToken(user));
     }
 
+    @Override
+    public List<UserDto> listBy(UserQuery userQuery) {
+
+        return CollectionUtils2.transform(baseMapper.selectList(userQuery.toQueryWrapper()), user -> new UserDto().converterFrom(user));
+
+    }
+
+    @Override
+    public PageResult<UserDto> pageBy(UserQuery userQuery, PageParam pageParam) {
+
+        Page<User> page = new Page<>(pageParam.getPage(), pageParam.getPageSize(), pageParam.isSearchTotal());
+        baseMapper.selectPage(page, userQuery.toQueryWrapper());
+        return PageResult.fromIPage(page, user -> new UserDto().converterFrom(user));
+    }
+
     /**
      * 修改登录时间
      * @param user user
      */
-    public void updateLastLoginTime(User user){
+    private void updateLastLoginTime(User user){
 
         //TODO 改为异步修改
         user.setLastLoginTime(new Date());
