@@ -3,6 +3,8 @@ package pers.tom.docwarehouse.model.supports.auditable;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
+import pers.tom.docwarehouse.security.SecurityInfo;
+import pers.tom.docwarehouse.security.SecurityInfoHolder;
 
 import java.util.Date;
 
@@ -38,5 +40,13 @@ public abstract class AuditableEntity {
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
+    /**
+     * 判断当前操作人是否是这条数据的创建人
+     * @return 返回boolean
+     */
+    public boolean isCreator(){
+        SecurityInfo securityInfo = SecurityInfoHolder.getSecurityInfo();
+        return securityInfo != null && creatorId.equals(securityInfo.getIdentity());
+    }
 
 }

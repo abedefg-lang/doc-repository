@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 import pers.tom.docwarehouse.model.supports.auditable.AuditableEntity;
 
 /**
- * @author lijia
+ * @author tom
  * @description
- * @date 2021-02-04 10:56
+ * @date 2021/2/3 23:53
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

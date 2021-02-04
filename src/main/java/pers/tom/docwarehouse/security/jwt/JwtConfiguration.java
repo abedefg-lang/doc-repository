@@ -1,10 +1,8 @@
-package pers.tom.docwarehouse.config.properties;
+package pers.tom.docwarehouse.security.jwt;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Date;
 
 /**
  * @author lijia
@@ -16,17 +14,16 @@ import java.util.Date;
 @Data
 public class JwtConfiguration {
 
-    /**密钥*/
-    private String secretKey;
+    /**公钥 加密生成的token*/
+    private String publicKey;
+
+    /**私钥 解密生成的token*/
+    private String privateKey;
+
+    /**签名密钥*/
+    private String signSecretKey;
 
     /**过期时间 单位是秒 默认是7天*/
     private Integer expireTime = 7*24*60*60;
 
-    /**
-     * 获取过期日期
-     * @return 返回日期
-     */
-    public Date getExpireDate(){
-        return new Date(expireTime*1000+System.currentTimeMillis());
-    }
 }

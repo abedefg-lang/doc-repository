@@ -1,9 +1,5 @@
 package pers.tom.docwarehouse.controller.handler;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -11,10 +7,10 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import pers.tom.docwarehouse.annotation.ApiAuthentication;
-import pers.tom.docwarehouse.config.properties.JwtConfiguration;
 import pers.tom.docwarehouse.exception.AuthenticationException;
 import pers.tom.docwarehouse.security.SecurityInfo;
 import pers.tom.docwarehouse.security.SecurityInfoHolder;
+import pers.tom.docwarehouse.security.jwt.JwtTokenCodec;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,11 +26,10 @@ public class ApiAuthenticationInterceptor implements HandlerInterceptor {
 
     public static final String AUTHENTICATION_HEADER_NAME = "Authorization";
 
-    private final JWTVerifier verifier;
+    private final JwtTokenCodec tokenCodec;
 
-    public ApiAuthenticationInterceptor(JwtConfiguration jwtConfiguration){
-
-        this.verifier = JWT.require(Algorithm.HMAC256(jwtConfiguration.getSecretKey())).build();
+    public ApiAuthenticationInterceptor(JwtTokenCodec tokenCodec){
+        this.tokenCodec = tokenCodec;
     }
 
     @Override
@@ -81,16 +76,7 @@ public class ApiAuthenticationInterceptor implements HandlerInterceptor {
         String token = this.getRealToken(request);
         if(!StringUtils.isEmpty(token)){
             try{
-                //验证token
-                DecodedJWT decoded = verifier.verify(token);
-
-                //获取身份唯一标识 身份标识描述
-                Long identity = decoded.getClaim(SecurityInfo.IDENTITY_NAME).asLong();
-                String identityInfo = decoded.getClaim(SecurityInfo.IDENTITY_INFO_NAME).asString();
-                if(identity != null && identityInfo != null){
-                    //查询user
-                    return new SecurityInfo(identity, identityInfo);
-                }
+                return tokenCodec.decode(token);
             }catch (Exception e){
                 log.error("Token exception: ", e);
                 throw new AuthenticationException("请重新登录");

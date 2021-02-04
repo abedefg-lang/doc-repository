@@ -2,8 +2,8 @@
   "groups": [
     {
       "name": "security.jwt",
-      "type": "pers.tom.docwarehouse.config.properties.JwtConfiguration",
-      "sourceType": "pers.tom.docwarehouse.config.properties.JwtConfiguration"
+      "type": "pers.tom.docwarehouse.security.jwt.JwtConfiguration",
+      "sourceType": "pers.tom.docwarehouse.security.jwt.JwtConfiguration"
     }
   ],
   "properties": [
@@ -11,13 +11,25 @@
       "name": "security.jwt.expire-time",
       "type": "java.lang.Integer",
       "description": "过期时间 单位是秒 默认是7天",
-      "sourceType": "pers.tom.docwarehouse.config.properties.JwtConfiguration"
+      "sourceType": "pers.tom.docwarehouse.security.jwt.JwtConfiguration"
     },
     {
-      "name": "security.jwt.secret-key",
+      "name": "security.jwt.private-key",
       "type": "java.lang.String",
-      "description": "密钥",
-      "sourceType": "pers.tom.docwarehouse.config.properties.JwtConfiguration"
+      "description": "私钥 解密生成的token",
+      "sourceType": "pers.tom.docwarehouse.security.jwt.JwtConfiguration"
+    },
+    {
+      "name": "security.jwt.public-key",
+      "type": "java.lang.String",
+      "description": "公钥 加密生成的token",
+      "sourceType": "pers.tom.docwarehouse.security.jwt.JwtConfiguration"
+    },
+    {
+      "name": "security.jwt.sign-secret-key",
+      "type": "java.lang.String",
+      "description": "签名密钥",
+      "sourceType": "pers.tom.docwarehouse.security.jwt.JwtConfiguration"
     }
   ],
   "hints": []

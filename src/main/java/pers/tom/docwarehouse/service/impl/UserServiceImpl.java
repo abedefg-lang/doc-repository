@@ -1,17 +1,12 @@
 package pers.tom.docwarehouse.service.impl;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
-import pers.tom.docwarehouse.config.properties.JwtConfiguration;
 import pers.tom.docwarehouse.exception.AuthenticationException;
 import pers.tom.docwarehouse.mapper.UserMapper;
 import pers.tom.docwarehouse.model.dto.AuthUser;
-import pers.tom.docwarehouse.model.dto.CategoryDto;
 import pers.tom.docwarehouse.model.dto.UserDto;
-import pers.tom.docwarehouse.model.entity.Category;
 import pers.tom.docwarehouse.model.entity.OperationLog;
 import pers.tom.docwarehouse.model.entity.User;
 import pers.tom.docwarehouse.model.param.LoginParam;
@@ -20,6 +15,7 @@ import pers.tom.docwarehouse.model.supports.PageParam;
 import pers.tom.docwarehouse.model.supports.PageResult;
 import pers.tom.docwarehouse.security.SecurityInfo;
 import pers.tom.docwarehouse.security.SecurityInfoHolder;
+import pers.tom.docwarehouse.security.jwt.JwtTokenCodec;
 import pers.tom.docwarehouse.service.OperationLogService;
 import pers.tom.docwarehouse.service.UserService;
 import pers.tom.docwarehouse.utils.CollectionUtils2;
@@ -36,34 +32,32 @@ import java.util.List;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
 
-    private final JwtConfiguration jwtConfiguration;
+    private final JwtTokenCodec tokenCodec;
 
     private final OperationLogService logService;
 
-    public UserServiceImpl(JwtConfiguration jwtConfiguration,
+    public UserServiceImpl(JwtTokenCodec tokenCodec,
                            OperationLogService logService) {
-        this.jwtConfiguration = jwtConfiguration;
+        this.tokenCodec = tokenCodec;
         this.logService = logService;
     }
 
     @Override
     public AuthUser login(LoginParam loginParam) {
 
-        User user = baseMapper.selectByUsername(loginParam.getUsername());
-        if(user == null || !loginParam.getPassword().equals(user.getPassword())){
-            throw new AuthenticationException("用户名或密码错误");
-        }
+        User user = authentication(loginParam.getUsername(), loginParam.getPassword());
 
         //修改登录时间
         updateLastLoginTime(user);
 
-        SecurityInfoHolder.setSecurityInfo(new SecurityInfo(user.getUserId(), user.getUsername()));
+        SecurityInfo securityInfo = new SecurityInfo(user.getUserId(), user.getUsername());
+        SecurityInfoHolder.setSecurityInfo(securityInfo);
 
         //写入日志
         logService.saveLog(new OperationLog("登录系统"));
 
         //返回authUser
-        return new AuthUser(new UserDto().converterFrom(user), buildToken(user));
+        return new AuthUser(new UserDto().converterFrom(user), tokenCodec.encode(securityInfo));
     }
 
     @Override
@@ -82,6 +76,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     /**
+     * 身份验证
+     * @param username username
+     * @param password password
+     * @return 认证成功返回user
+     */
+    private User authentication(String username, String password){
+        User user = baseMapper.selectByUsername(username);
+        if(user == null || !user.getPassword().equals(password)){
+            throw new AuthenticationException("用户名或密码错误");
+        }
+        return user;
+    }
+
+    /**
      * 修改登录时间
      * @param user user
      */
@@ -92,17 +100,4 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         baseMapper.updateById(user);
     }
 
-    /**
-     * 构建token
-     * @param user user
-     * @return 返回token
-     */
-    private String buildToken(User user){
-
-        return JWT.create()
-                .withClaim(SecurityInfo.IDENTITY_NAME, user.getUserId())
-                .withClaim(SecurityInfo.IDENTITY_INFO_NAME, user.getUsername())
-                .withExpiresAt(jwtConfiguration.getExpireDate())
-                .sign(Algorithm.HMAC256(jwtConfiguration.getSecretKey()));
-    }
 }
