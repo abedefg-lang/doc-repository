@@ -8,6 +8,7 @@ import pers.tom.docwarehouse.annotation.PackagingResponse;
 import pers.tom.docwarehouse.model.dto.DocumentDto;
 import pers.tom.docwarehouse.model.dto.DocumentVersionDto;
 import pers.tom.docwarehouse.model.param.DocumentParam;
+import pers.tom.docwarehouse.model.param.DocumentRevertParam;
 import pers.tom.docwarehouse.model.query.DocumentQuery;
 import pers.tom.docwarehouse.model.supports.BaseResult;
 import pers.tom.docwarehouse.model.supports.PageParam;
@@ -98,9 +99,9 @@ public class DocumentController {
 
     @PutMapping("/revert")
     @ApiOperation("将文档内容 内容概述回退到指定版本")
-    public BaseResult<Boolean> revert(@RequestParam("versionId") Long versionId){
+    public BaseResult<Boolean> revert(@RequestBody DocumentRevertParam revertParam){
 
-        return BaseResult.ok(documentService.revert(versionId));
+        return BaseResult.ok(documentService.revert(revertParam.getVersionId()));
     }
 
 }

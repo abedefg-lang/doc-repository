@@ -30,7 +30,7 @@ public class DocumentVersion {
     @TableField("content_overview")
     private String contentOverview;
 
-    @TableField(value = "create_by", fill = FieldFill.INSERT)
+    @TableField(value = "created_by", fill = FieldFill.INSERT)
     private String createdBy;
 
     @TableField(value = "creator_id", fill = FieldFill.INSERT)

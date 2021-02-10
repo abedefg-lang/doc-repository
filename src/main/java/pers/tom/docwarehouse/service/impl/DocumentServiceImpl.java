@@ -56,6 +56,9 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         Document document = documentParam.converterTo();
         baseMapper.insert(document);
 
+        //新增文档版本
+        versionService.save(new DocumentVersion(document.getDocumentId(), document.getContent(), document.getContentOverview()));
+
         //写入日志
         logService.saveLog(new OperationLog("创建文档: " + title));
 

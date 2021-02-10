@@ -3,9 +3,11 @@ package pers.tom.docwarehouse.controller.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,6 +25,22 @@ import java.util.List;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public BaseResult<?> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        BaseResult<?> baseResult = handleException(e);
+        baseResult.setStatus(HttpStatus.BAD_REQUEST.value());
+        return baseResult;
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public BaseResult<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        BaseResult<?> baseResult = handleException(e);
+        baseResult.setStatus(HttpStatus.BAD_REQUEST.value());
+        baseResult.setMessage("缺失请求主体");
+        return baseResult;
+    }
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -51,6 +69,14 @@ public class GlobalExceptionHandler {
         result.setStatus(docWarehouseException.getStatus());
         result.setMessage(docWarehouseException.getMessage());
         return result;
+    }
+
+    @ExceptionHandler(Exception.class)
+    public BaseResult<?> handleGlobalException(Exception e) {
+        BaseResult<?> baseResponse = handleException(e);
+        baseResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        baseResponse.setMessage("服务器异常 请稍后重试");
+        return baseResponse;
     }
 
     /**
