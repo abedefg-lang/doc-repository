@@ -7,7 +7,6 @@ package pers.tom.docwarehouse.exception;
  */
 public abstract class DocWarehouseException extends RuntimeException{
 
-
     private Object errorData;
 
     public DocWarehouseException(String message){

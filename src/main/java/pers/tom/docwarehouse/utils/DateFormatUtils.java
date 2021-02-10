@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * @author lijia
- * @description 获取日期格式化工具
+ * @description 日期格式化工具
  * @date 2021-01-29 13:51
  */
 public class DateFormatUtils {
@@ -54,7 +54,7 @@ public class DateFormatUtils {
         try{
             return format.parse(source);
         }catch (ParseException parseException){
-            throw new ServiceException("日期不符合" + pattern + "格式");
+            throw new ServiceException("日期不符合 [" + pattern + "] 格式");
         }
     }
 

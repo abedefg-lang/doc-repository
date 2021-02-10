@@ -24,6 +24,13 @@ public interface CategoryService extends IService<Category> {
      */
     Category createCategory(CategoryParam param);
 
+    /**
+     * 修改指定的分类
+     * @param param 分类参数
+     * @param categoryId 需要修改的分类id
+     * @return 返回是否修改成功
+     */
+    boolean updateById(CategoryParam param, Long categoryId);
 
     /**
      * 条件查询分类数据
@@ -31,7 +38,6 @@ public interface CategoryService extends IService<Category> {
      * @return 返回list
      */
     List<CategoryDto> listBy(CategoryQuery categoryQuery);
-
 
     /**
      * 分页查询分类数据

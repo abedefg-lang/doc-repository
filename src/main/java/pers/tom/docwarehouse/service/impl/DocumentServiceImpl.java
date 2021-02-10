@@ -10,6 +10,7 @@ import pers.tom.docwarehouse.mapper.DocumentMapper;
 import pers.tom.docwarehouse.model.dto.DocumentDto;
 import pers.tom.docwarehouse.model.entity.Category;
 import pers.tom.docwarehouse.model.entity.Document;
+import pers.tom.docwarehouse.model.entity.DocumentVersion;
 import pers.tom.docwarehouse.model.entity.OperationLog;
 import pers.tom.docwarehouse.model.param.DocumentParam;
 import pers.tom.docwarehouse.model.query.DocumentQuery;
@@ -17,6 +18,7 @@ import pers.tom.docwarehouse.model.supports.PageParam;
 import pers.tom.docwarehouse.model.supports.PageResult;
 import pers.tom.docwarehouse.service.CategoryService;
 import pers.tom.docwarehouse.service.DocumentService;
+import pers.tom.docwarehouse.service.DocumentVersionService;
 import pers.tom.docwarehouse.service.OperationLogService;
 
 /**
@@ -31,10 +33,14 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
 
     private final CategoryService categoryService;
 
+    private final DocumentVersionService versionService;
+
     public DocumentServiceImpl(OperationLogService logService,
-                               CategoryService categoryService) {
+                               CategoryService categoryService,
+                               DocumentVersionService versionService) {
         this.logService = logService;
         this.categoryService = categoryService;
+        this.versionService = versionService;
     }
 
     @Override
@@ -64,13 +70,21 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         if(baseMapper.existByTitle(title)){
             throw new ServiceException(title + "已存在");
         }
+        Document oriDocument = baseMapper.selectById(documentId);
+        if(oriDocument == null){
+            throw new ServiceException("该文档不存在 请刷新重试");
+        }
+        Document newDocument = documentParam.converterTo();
+        newDocument.setDocumentId(documentId);
+        baseMapper.updateById(newDocument);
 
-        Document document = documentParam.converterTo();
-        document.setDocumentId(documentId);
-        baseMapper.updateById(document);
+        //判断文档内容是否有修改  如果发生修改添加历史版本
+        if(!oriDocument.getContent().equals(newDocument.getContent())){
+            versionService.save(new DocumentVersion(documentId, newDocument.getContent(), newDocument.getContentOverview()));
+        }
 
         //写入日志
-        logService.saveLog(new OperationLog("编辑模块: " + title));
+        logService.saveLog(new OperationLog("编辑文档: " + title));
 
         return true;
     }
@@ -98,6 +112,29 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         return PageResult.fromIPage(page, this::converterTo);
     }
 
+    @Override
+    @Transactional
+    public boolean revert(Long versionId) {
+
+        DocumentVersion version = versionService.getById(versionId);
+        if(version == null){
+            throw new ServiceException("找不到该版本 请刷新重试");
+        }
+
+        //修改内容 内容概述
+        Document document = new Document();
+        document.setDocumentId(version.getDocumentId());
+        document.setContent(version.getContent());
+        document.setContentOverview(version.getContentOverview());
+
+        if(!this.updateById(document)){
+            throw new ServiceException("找不到该文档 请刷新重试");
+        }
+
+        //修改成功 添加日志
+        logService.saveLog(new OperationLog("回退文档: " + document.getTitle()));
+        return true;
+    }
 
     private DocumentDto converterTo(Document document){
 

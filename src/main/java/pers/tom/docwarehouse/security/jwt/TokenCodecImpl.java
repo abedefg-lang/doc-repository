@@ -28,15 +28,12 @@ public class TokenCodecImpl implements JwtTokenCodec{
     public String encode(SecurityInfo securityInfo) {
 
         Date expireDate = new Date(jwtConfiguration.getExpireTime()*1000 + System.currentTimeMillis());
-        String token = JWT.create()
+        return JWT.create()
                 .withClaim(SecurityInfo.IDENTITY_NAME, securityInfo.getIdentity())
                 .withClaim(SecurityInfo.IDENTITY_INFO_NAME, securityInfo.getIdentityInfo())
                 .withExpiresAt(expireDate)
                 .sign(Algorithm.HMAC256(jwtConfiguration.getSignSecretKey()));
-
-        //进行加密
-
-        return token;
+//        return token;
     }
 
     @Override

@@ -4,12 +4,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import pers.tom.docwarehouse.model.dto.DocumentDto;
 import pers.tom.docwarehouse.model.entity.Document;
 import pers.tom.docwarehouse.model.param.DocumentParam;
-import pers.tom.docwarehouse.model.param.EditDocumentParam;
 import pers.tom.docwarehouse.model.query.DocumentQuery;
 import pers.tom.docwarehouse.model.supports.PageParam;
 import pers.tom.docwarehouse.model.supports.PageResult;
 
-import java.util.List;
 
 /**
  * @author lijia
@@ -23,7 +21,7 @@ public interface DocumentService extends IService<Document> {
      * @param documentParam 文档参数
      * @return 返回创建的文档
      */
-    Document create(DocumentParam documentParam);
+    Document  create(DocumentParam documentParam);
 
     /**
      * 编辑文档
@@ -47,5 +45,12 @@ public interface DocumentService extends IService<Document> {
      * @return 返回分页结果
      */
     PageResult<DocumentDto> pageBy(DocumentQuery documentQuery, PageParam pageParam);
+
+    /**
+     * 将文档内容 内容概述 回退到指定版本
+     * @param versionId 版本id
+     * @return 返回是否回退成功
+     */
+    boolean revert(Long versionId);
 
 }

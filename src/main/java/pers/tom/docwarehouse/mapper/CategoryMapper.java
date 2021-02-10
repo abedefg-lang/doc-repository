@@ -11,6 +11,10 @@ import pers.tom.docwarehouse.model.entity.Category;
  */
 public interface CategoryMapper extends BaseMapper<Category> {
 
-
+    /**
+     * 判断是否已存在该分类
+     * @param name 分类名称
+     * @return 返回是否存在
+     */
     boolean existByName(@Param("name") String name);
 }

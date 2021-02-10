@@ -2,6 +2,7 @@ package pers.tom.docwarehouse.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pers.tom.docwarehouse.exception.ServiceException;
@@ -43,6 +44,42 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
+    public boolean removeById(Serializable id) {
+
+        //通过返回条数判断数据库中是否存在该数据
+        Category category = this.getById(id);
+        if(category == null){
+            throw new ServiceException("找不到该分类 请刷新重试");
+        }
+        baseMapper.deleteById(id);
+
+        //写入日志
+        logService.saveLog(new OperationLog("删除分类: " + category.getName()));
+        return true;
+    }
+
+
+    @Override
+    public boolean updateById(CategoryParam param, Long categoryId) {
+
+        //检查分类是否存在
+        String name = param.getName();
+        if(baseMapper.existByName(name)){
+            throw new ServiceException(name+"已存在");
+        }
+
+        Category newCategory = param.converterTo();
+        newCategory.setCategoryId(categoryId);
+        if(!SqlHelper.retBool(baseMapper.updateById(newCategory))){
+            throw new ServiceException("找不到该分类 请刷新重试");
+        }
+
+        //写入日志
+        logService.saveLog(new OperationLog("编辑分类: " + name));
+        return true;
+    }
+
+    @Override
     public Category createCategory(CategoryParam param) {
 
         //检查分类是否存在
@@ -55,7 +92,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         baseMapper.insert(category);
 
         //写入日志
-        logService.saveLog(new OperationLog("创建模块: "+name));
+        logService.saveLog(new OperationLog("创建分类: "+name));
 
         return category;
     }

@@ -14,11 +14,9 @@ public class ServiceException extends DocWarehouseException{
         super(message);
     }
 
-
     public ServiceException(String message, Object errorData){
         super(message, errorData);
     }
-
 
     @Override
     public Integer getStatus() {
