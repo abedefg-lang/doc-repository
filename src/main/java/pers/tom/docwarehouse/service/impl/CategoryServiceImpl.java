@@ -3,7 +3,6 @@ package pers.tom.docwarehouse.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pers.tom.docwarehouse.exception.ServiceException;
 import pers.tom.docwarehouse.mapper.CategoryMapper;
@@ -36,12 +35,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
 
-    @Override
-    @Cacheable(cacheNames = "category", key = "#id")
-    public Category getById(Serializable id) {
-
-        return super.getById(id);
-    }
 
     @Override
     public boolean removeById(Serializable id) {

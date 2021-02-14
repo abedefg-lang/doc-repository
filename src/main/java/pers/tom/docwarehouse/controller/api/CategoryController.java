@@ -41,20 +41,27 @@ public class CategoryController {
         return BaseResult.ok(categoryService.createCategory(param).getCategoryId());
     }
 
-//    @DeleteMapping("/{categoryId}")
-//    @ApiOperation("删除指定分类")
-//    public BaseResult<Boolean> removeById(@PathVariable("categoryId") Long categoryId){
-//
-//        return BaseResult.ok(categoryService.removeById(categoryId));
-//    }
-//
-//    @PutMapping("/{categoryId}")
-//    @ApiOperation("修改指定模块")
-//    public BaseResult<Boolean> updateById(@RequestBody @Valid CategoryParam param,
-//                                          @PathVariable("categoryId") Long categoryId){
-//
-//        return BaseResult.ok(categoryService.updateById(param, categoryId));
-//    }
+    @GetMapping("/{categoryId}")
+    @ApiOperation("获取单个分类信息")
+    public CategoryDto detail(@PathVariable("categoryId") Long categoryId){
+
+        return new CategoryDto().converterFrom(categoryService.getById(categoryId));
+    }
+
+    @DeleteMapping("/{categoryId}")
+    @ApiOperation("删除指定分类")
+    public BaseResult<Boolean> removeById(@PathVariable("categoryId") Long categoryId){
+
+        return BaseResult.ok(categoryService.removeById(categoryId));
+    }
+
+    @PutMapping("/{categoryId}")
+    @ApiOperation("修改指定模块")
+    public BaseResult<Boolean> updateById(@RequestBody @Valid CategoryParam param,
+                                          @PathVariable("categoryId") Long categoryId){
+
+        return BaseResult.ok(categoryService.updateById(param, categoryId));
+    }
 
     @GetMapping("/listBy")
     @ApiOperation("条件查询分类")
