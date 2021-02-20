@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import pers.tom.docwarehouse.model.entity.Document;
 
-import java.util.List;
 
 /**
  * @author lijia
@@ -18,12 +17,6 @@ public interface DocumentMapper extends BaseMapper<Document> {
      * @param title title
      * @return 返回是否存在
      */
-    boolean existByTitle(@Param("title") String title);
+    Document selectByTitle(@Param("title") String title);
 
-    /**
-     * 通过创建人id查询
-     * @param creatorId 创建人id
-     * @return 返回文档数据
-     */
-    List<Document> selectByCreatorId(@Param("creatorId") Long creatorId);
 }

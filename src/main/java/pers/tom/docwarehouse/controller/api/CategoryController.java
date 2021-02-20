@@ -26,6 +26,7 @@ import java.util.List;
 @Api(tags = "分类接口")
 @ApiAuthentication
 @PackagingResponse
+//@CrossOrigin
 public class CategoryController {
 
     private final CategoryService categoryService;

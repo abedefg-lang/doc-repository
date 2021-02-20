@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * @author lijia
  * @description 标志性注解
- *              会对返回结果进行包装进BaseResult
+ *              会对返回结果进行包装进{@link pers.tom.docwarehouse.model.supports.BaseResult}
  * @date 2021/1/29 23:55
  */
 @Target({ElementType.METHOD, ElementType.TYPE})

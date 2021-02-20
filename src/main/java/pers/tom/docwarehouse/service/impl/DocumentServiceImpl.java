@@ -49,7 +49,7 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
 
         //判断文档标题是否存在
         String title = documentParam.getTitle();
-        if(baseMapper.existByTitle(title)){
+        if(baseMapper.selectByTitle(title) != null){
             throw new ServiceException(title + "已存在");
         }
 
@@ -69,13 +69,16 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
     @Transactional
     public boolean edit(DocumentParam documentParam, Long documentId) {
 
-        String title = documentParam.getTitle();
-        if(baseMapper.existByTitle(title)){
-            throw new ServiceException(title + "已存在");
-        }
         Document oriDocument = baseMapper.selectById(documentId);
         if(oriDocument == null){
             throw new ServiceException("该文档不存在 请刷新重试");
+        }
+
+        //判断标题是否已存在
+        String title = documentParam.getTitle();
+        Document document = baseMapper.selectByTitle(title);
+        if(document != null && !document.getDocumentId().equals(documentId)){
+            throw new ServiceException(title + "已存在");
         }
         Document newDocument = documentParam.converterTo();
         newDocument.setDocumentId(documentId);

@@ -25,6 +25,7 @@ import java.util.List;
 @RequestMapping("/api/users")
 @Api(tags = "用户接口")
 @PackagingResponse
+//@CrossOrigin
 public class UserController {
 
     private final UserService userService;
