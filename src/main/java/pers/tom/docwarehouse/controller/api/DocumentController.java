@@ -29,7 +29,6 @@ import javax.validation.Valid;
 @Api(tags = "文档接口")
 @ApiAuthentication
 @PackagingResponse
-//@CrossOrigin
 public class DocumentController {
 
     private final DocumentService documentService;

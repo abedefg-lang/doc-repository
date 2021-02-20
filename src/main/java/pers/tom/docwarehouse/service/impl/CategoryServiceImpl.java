@@ -34,11 +34,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         this.logService = logService;
     }
 
-
-
     @Override
     public boolean removeById(Serializable id) {
 
+        if(isDefaultCategory((Long) id)){
+            throw new ServiceException("该分类为默认分类 无法删除");
+        }
         //通过返回条数判断数据库中是否存在该数据
         Category category = this.getById(id);
         if(category == null){
@@ -55,6 +56,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     @Override
     public boolean updateById(CategoryParam param, Long categoryId) {
 
+        if(isDefaultCategory(categoryId)){
+            throw new ServiceException("该分类为默认分类 无法修改");
+        }
         //检查分类是否存在
         String name = param.getName();
         if(baseMapper.existByName(name)){
@@ -103,5 +107,14 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         baseMapper.selectPage(page, categoryQuery.toQueryWrapper());
 
         return PageResult.fromIPage(page, category -> new CategoryDto().converterFrom(category));
+    }
+
+    /**
+     * 判断是否为默认分类
+     * @param categoryId 分类id
+     * @return 返回boolean
+     */
+    private boolean isDefaultCategory(Long categoryId){
+        return categoryId != null && categoryId.equals(0L);
     }
 }
