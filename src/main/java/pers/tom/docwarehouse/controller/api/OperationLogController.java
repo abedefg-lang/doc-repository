@@ -24,7 +24,6 @@ import java.util.List;
 @Api(tags = "操作日志接口")
 @ApiAuthentication
 @PackagingResponse
-//@CrossOrigin
 public class OperationLogController {
 
     private final OperationLogService logService;

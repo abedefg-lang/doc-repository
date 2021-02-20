@@ -19,4 +19,12 @@ public interface DocumentMapper extends BaseMapper<Document> {
      */
     Document selectByTitle(@Param("title") String title);
 
+    /**
+     * 替换分类id
+     * @param oriCategoryId 原来的分类id
+     * @param newCategoryId 新的分类id
+     * @return 返回影响条数
+     */
+    int replaceCategoryId(@Param("oriCategoryId") Long oriCategoryId,
+                          @Param("newCategoryId") Long newCategoryId);
 }

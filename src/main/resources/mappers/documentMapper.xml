@@ -8,35 +8,10 @@
         where `title` = #{title};
     </select>
 
-<!--    <select id="selectByCreatorId">-->
-<!--        select `document_id`,`category_id`,`title`,`content_overview`,`created_by`,`creator_id`,`create_time`,`updated_by`,`updater_id`,`update_time`-->
-<!--        from `document`-->
-<!--        where -->
-<!--    </select>-->
-
-
-<!--    <select id="detail" resultType="pers.tom.docwarehouse.model.dto.DocumentDto">-->
-<!--        select `document_id`,doc.`category_id`,ca.`name`,`content`,`title`,`content_overview`,doc.`created_by`,doc.`creator_id`,doc.`create_time`,doc.`updated_by`,doc.`updater_id`,doc.`update_time`-->
-<!--        from (-->
-<!--            select <include refid="baseColumn"/>,`content`-->
-<!--            from `document`-->
-<!--            where `document_id` = #{documentId}-->
-<!--        ) as doc-->
-<!--        left join `category` as ca-->
-<!--        on ca.category_id = doc.category_id-->
-<!--    </select>-->
-
-<!--    <select id="pageBy" resultType="pers.tom.docwarehouse.model.dto.DocumentDto">-->
-<!--        select -->
-<!--        from (-->
-<!--            select <include refid="baseColumn"/>-->
-<!--            from `document`-->
-<!--        ) as doc-->
-<!--        left join `category` as ca-->
-<!--        on ca.category_id = doc.category_id-->
-<!--        order by doc.`create_time` desc-->
-<!--    </select>-->
-
-<!--    &lt;!&ndash;不包含content的字段&ndash;&gt;-->
+    <update id="replaceCategoryId">
+        update `document`
+        set `category_id` = #{newCategoryId}
+        where `category_id` = #{oriCategoryId}
+    </update>
 
 </mapper>

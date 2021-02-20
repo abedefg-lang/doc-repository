@@ -14,18 +14,6 @@
       "sourceType": "pers.tom.docwarehouse.security.jwt.JwtConfiguration"
     },
     {
-      "name": "security.jwt.private-key",
-      "type": "java.lang.String",
-      "description": "私钥 解密生成的token",
-      "sourceType": "pers.tom.docwarehouse.security.jwt.JwtConfiguration"
-    },
-    {
-      "name": "security.jwt.public-key",
-      "type": "java.lang.String",
-      "description": "公钥 加密生成的token",
-      "sourceType": "pers.tom.docwarehouse.security.jwt.JwtConfiguration"
-    },
-    {
       "name": "security.jwt.sign-secret-key",
       "type": "java.lang.String",
       "description": "签名密钥",

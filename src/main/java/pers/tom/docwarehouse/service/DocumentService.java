@@ -53,4 +53,11 @@ public interface DocumentService extends IService<Document> {
      */
     boolean revert(Long versionId);
 
+    /**
+     * 合并分类  将原来分类中的文档 移动到新的分类中
+     * @param oriCategoryId 原来的分类id
+     * @param newCategoryId 新的分类id
+     * @return 返回是否合并成功
+     */
+    boolean mergeCategory(Long oriCategoryId, Long newCategoryId);
 }

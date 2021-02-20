@@ -14,11 +14,6 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class JwtConfiguration {
 
-    /**公钥 加密生成的token*/
-    private String publicKey;
-
-    /**私钥 解密生成的token*/
-    private String privateKey;
 
     /**签名密钥*/
     private String signSecretKey;

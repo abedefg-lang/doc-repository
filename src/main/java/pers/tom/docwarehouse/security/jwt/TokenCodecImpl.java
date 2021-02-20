@@ -28,6 +28,9 @@ public class TokenCodecImpl implements JwtTokenCodec{
     public String encode(SecurityInfo securityInfo) {
 
         Date expireDate = new Date(jwtConfiguration.getExpireTime()*1000 + System.currentTimeMillis());
+
+        //对内容进行对称加密
+
         return JWT.create()
                 .withClaim(SecurityInfo.IDENTITY_NAME, securityInfo.getIdentity())
                 .withClaim(SecurityInfo.IDENTITY_INFO_NAME, securityInfo.getIdentityInfo())

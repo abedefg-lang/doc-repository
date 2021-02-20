@@ -17,6 +17,8 @@ import java.util.List;
  */
 public interface CategoryService extends IService<Category> {
 
+    /**默认分类id*/
+    Long DEFAULT_CATEGORY_ID = 1L;
 
     /**
      * 创建分类

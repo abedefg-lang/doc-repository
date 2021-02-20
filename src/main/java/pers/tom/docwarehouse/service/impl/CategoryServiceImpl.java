@@ -115,6 +115,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
      * @return 返回boolean
      */
     private boolean isDefaultCategory(Long categoryId){
-        return categoryId != null && categoryId.equals(0L);
+        return categoryId != null && categoryId.equals(DEFAULT_CATEGORY_ID);
     }
 }

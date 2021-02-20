@@ -12,6 +12,7 @@ import pers.tom.docwarehouse.model.supports.BaseResult;
 import pers.tom.docwarehouse.model.supports.PageParam;
 import pers.tom.docwarehouse.model.supports.PageResult;
 import pers.tom.docwarehouse.service.CategoryService;
+import pers.tom.docwarehouse.service.DocumentService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -26,13 +27,16 @@ import java.util.List;
 @Api(tags = "分类接口")
 @ApiAuthentication
 @PackagingResponse
-//@CrossOrigin
 public class CategoryController {
 
     private final CategoryService categoryService;
 
-    public CategoryController(CategoryService categoryService) {
+    private final DocumentService documentService;
+
+    public CategoryController(CategoryService categoryService,
+                              DocumentService documentService) {
         this.categoryService = categoryService;
+        this.documentService = documentService;
     }
 
     @PostMapping
@@ -53,7 +57,9 @@ public class CategoryController {
     @ApiOperation("删除指定分类")
     public BaseResult<Boolean> removeById(@PathVariable("categoryId") Long categoryId){
 
-        return BaseResult.ok(categoryService.removeById(categoryId));
+        boolean result = categoryService.removeById(categoryId);
+        documentService.mergeCategory(categoryId, CategoryService.DEFAULT_CATEGORY_ID);
+        return BaseResult.ok(result);
     }
 
     @PutMapping("/{categoryId}")

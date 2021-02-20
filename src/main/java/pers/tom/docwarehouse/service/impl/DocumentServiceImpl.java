@@ -3,6 +3,7 @@ package pers.tom.docwarehouse.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pers.tom.docwarehouse.exception.ServiceException;
@@ -140,6 +141,12 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         //修改成功 添加日志
         logService.saveLog(new OperationLog("回退文档: " + document.getTitle()));
         return true;
+    }
+
+    @Override
+    public boolean mergeCategory(Long oriCategoryId, Long newCategoryId) {
+
+        return SqlHelper.retBool(baseMapper.replaceCategoryId(oriCategoryId, newCategoryId));
     }
 
     private DocumentDto converterTo(Document document){

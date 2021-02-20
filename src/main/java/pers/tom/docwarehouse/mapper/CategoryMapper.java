@@ -17,4 +17,5 @@ public interface CategoryMapper extends BaseMapper<Category> {
      * @return 返回是否存在
      */
     boolean existByName(@Param("name") String name);
+
 }
